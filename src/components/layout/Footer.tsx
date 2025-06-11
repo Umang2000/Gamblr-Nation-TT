@@ -23,11 +23,11 @@ const KickIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 
 const socialLinks = [
-  { name: 'Discord', href: '#', icon: DiscordIcon, brandColorClass: 'text-[#5865F2]' },
-  { name: 'Twitch', href: '#', icon: TwitchIcon, brandColorClass: 'text-[#9146FF]' },
-  { name: 'Kick', href: '#', icon: KickIcon, brandColorClass: 'text-[#53FC18]' },
-  { name: 'Telegram', href: '#', icon: Send, brandColorClass: 'text-[#2AABEE]' },
-  { name: 'Twitter', href: '#', icon: TwitterIcon, brandColorClass: 'text-primary' }, 
+  { name: 'Discord', href: 'https://discord.gg/4rMAp8am', icon: DiscordIcon, brandColorClass: 'text-[#5865F2]' },
+  { name: 'Twitch', href: 'https://www.twitch.tv/afterhoursaz', icon: TwitchIcon, brandColorClass: 'text-[#9146FF]' },
+  { name: 'Kick', href: 'https://kick.com/afterhoursaz', icon: KickIcon, brandColorClass: 'text-[#53FC18]' },
+  { name: 'Telegram', href: 'https://discord.gg/4rMAp8am', icon: Send, brandColorClass: 'text-[#2AABEE]' },
+  { name: 'Twitter', href: 'https://x.com/atzell69', icon: TwitterIcon, brandColorClass: 'text-primary' },
 ];
 
 export default function Footer() {
