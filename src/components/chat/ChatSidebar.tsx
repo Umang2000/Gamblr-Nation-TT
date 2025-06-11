@@ -122,54 +122,56 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
 
         <ScrollArea className="flex-grow p-4" ref={scrollAreaRef}>
           <div className="space-y-4">
-            {messages.map((msg) => (
-              <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`flex items-start gap-2.5 max-w-[80%]`}>
-                  {msg.sender === 'bot' && (
-                    <Avatar className="h-8 w-8 shrink-0">
-                      <AvatarImage src={msg.avatar} alt={msg.name} />
-                      <AvatarFallback className="bg-accent text-accent-foreground">
-                        {msg.name.substring(0, 1).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                  )}
-                  
-                  <div className={`flex flex-col gap-0.5 min-w-0 ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
-                    <span className="text-xs font-semibold text-foreground px-1">{msg.name}</span>
+            {messages.map((msg) => {
+              const isUserMessage = msg.sender === 'user';
+              return (
+                <div key={msg.id} className={`flex ${isUserMessage ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`flex items-start gap-2.5 max-w-[80%]`}>
+                    {!isUserMessage && ( // Bot avatar first
+                      <Avatar className="h-8 w-8 shrink-0">
+                        <AvatarImage src={msg.avatar} alt={msg.name} />
+                        <AvatarFallback className="bg-accent text-accent-foreground">
+                          {msg.name.substring(0, 1).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                    )}
                     
-                    <div
-                      className={cn(
-                        'p-3 rounded-lg text-sm font-normal break-words min-w-0',
-                        msg.sender === 'user'
-                          ? 'bg-primary text-primary-foreground rounded-tr-none'
-                          : 'bg-secondary text-secondary-foreground rounded-tl-none'
-                      )}
-                    >
-                      {msg.text}
+                    <div className={cn('flex flex-col gap-0.5 min-w-0', isUserMessage ? 'items-end flex-1' : 'items-start')}>
+                      <span className="text-xs font-semibold text-foreground px-1">{msg.name}</span>
+                      <div
+                        className={cn(
+                          'p-3 rounded-lg text-sm font-normal min-w-0', 
+                          isUserMessage
+                            ? 'bg-primary text-primary-foreground rounded-tr-none break-all' 
+                            : 'bg-secondary text-secondary-foreground rounded-tl-none break-words'
+                        )}
+                      >
+                        {msg.text}
+                      </div>
+                      <div
+                        className={cn(
+                          'text-xs px-1', 
+                          isUserMessage ? 'text-primary-foreground/70 text-right' : 'text-muted-foreground text-left'
+                        )}
+                      >
+                        {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </div>
                     </div>
-                    <div
-                      className={cn(
-                        'text-xs px-1', 
-                        msg.sender === 'user' ? 'text-primary-foreground/70 text-right' : 'text-muted-foreground text-left'
-                      )}
-                    >
-                      {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </div>
-                  </div>
 
-                  {msg.sender === 'user' && currentUser && (
-                    <Avatar className="h-8 w-8 shrink-0">
-                      {msg.userAvatarUrl ? (
-                        <AvatarImage src={msg.userAvatarUrl} alt={currentUser.username} />
-                      ) : null}
-                      <AvatarFallback className="bg-primary text-primary-foreground">
-                        {currentUser.username ? currentUser.username.charAt(0).toUpperCase() : <UserIconLucide className="h-4 w-4" />}
-                      </AvatarFallback>
-                    </Avatar>
-                  )}
+                    {isUserMessage && currentUser && ( // User avatar last
+                      <Avatar className="h-8 w-8 shrink-0">
+                        {msg.userAvatarUrl ? (
+                          <AvatarImage src={msg.userAvatarUrl} alt={currentUser.username} />
+                        ) : null}
+                        <AvatarFallback className="bg-primary text-primary-foreground">
+                          {currentUser.username ? currentUser.username.charAt(0).toUpperCase() : <UserIconLucide className="h-4 w-4" />}
+                        </AvatarFallback>
+                      </Avatar>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </ScrollArea>
 
@@ -205,7 +207,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
             </Button>
           </form>
           {!authIsLoading && !currentUser && isOpen && (
-            <p className="text-xs text-muted-foreground mt-2 text-center">
+             <p className="text-xs text-muted-foreground mt-2 text-center">
               Want to join the conversation? <Link href="/login" className="text-primary hover:underline font-semibold">Log In</Link> or <Link href="/signup" className="text-primary hover:underline font-semibold">Sign Up</Link>.
             </p>
           )}
@@ -214,4 +216,3 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     </div>
   );
 }
-
