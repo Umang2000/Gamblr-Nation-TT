@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Gamepad2, UserCircle, LogIn, Gem, DollarSign } from 'lucide-react'; // Added Gem, DollarSign
+import { Menu, X, Gamepad2, UserCircle, LogIn, Gem, DollarSign } from 'lucide-react'; 
 import { useState } from 'react';
 import Logo from '@/components/icons/Logo';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,7 @@ import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/s
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/context/AuthContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useJackpot } from '@/context/JackpotContext'; // Import useJackpot
+import { useJackpot } from '@/context/JackpotContext'; 
 
 const navItems = [
   { name: 'Home', href: '/', icon: Gamepad2 },
@@ -20,10 +20,8 @@ const navItems = [
   { name: 'Marketplace', href: '/marketplace', icon: Gamepad2 },
   { name: 'Live Stream', href: '/live-stream', icon: Gamepad2 },
   { name: 'Daily Case', href: '/daily-case', icon: Gamepad2 },
-  // { name: 'Jackpot', href: '/progressive-jackpot', icon: Gem }, // Removed old Jackpot link
 ];
 
-// navItems for mobile menu will still include a Jackpot link
 const mobileNavItems = [
   ...navItems,
   { name: 'Jackpot', href: '/progressive-jackpot', icon: Gem },
@@ -40,13 +38,17 @@ const NavLink = ({ href, children, onClick, icon: Icon, isActiveOverride }: { hr
         variant="ghost"
         onClick={onClick}
         className={cn(
-          "text-sm font-medium transition-colors hover:text-primary",
+          "text-sm font-medium transition-colors group", // Added 'group', removed 'hover:text-primary'
           isActive ? "text-primary font-bold" : "text-foreground/80",
           "flex items-center gap-2 justify-start md:justify-center px-2 py-1 md:px-3 md:py-2"
         )}
         aria-current={isActive ? "page" : undefined}
       >
-        {Icon && <Icon className={cn("h-4 w-4", isActive ? "text-primary" : "text-accent")} />}
+        {Icon && <Icon className={cn(
+            "h-4 w-4 transition-colors",
+            isActive ? "text-primary" : "text-accent",
+            !isActive && "group-hover:text-accent-foreground" // Change icon color on hover if not active
+          )} />}
         {children}
       </Button>
     </Link>
@@ -63,12 +65,16 @@ function LiveJackpotDisplay() {
       <Button
         variant="ghost"
         className={cn(
-          "text-sm font-medium transition-colors hover:text-primary px-2 py-1 md:px-3 md:py-2 flex items-center gap-1.5",
+          "text-sm font-medium transition-colors group px-2 py-1 md:px-3 md:py-2 flex items-center gap-1.5", // Added 'group', removed 'hover:text-primary'
           isActive ? "text-primary font-bold bg-primary/10" : "text-foreground/80"
         )}
         aria-current={isActive ? "page" : undefined}
       >
-        <DollarSign className={cn("h-4 w-4", isActive ? "text-primary" : "text-accent")} />
+        <DollarSign className={cn(
+            "h-4 w-4 transition-colors", 
+            isActive ? "text-primary" : "text-accent",
+            !isActive && "group-hover:text-accent-foreground" // Change icon color on hover if not active
+            )} />
         <span className="hidden lg:inline text-foreground/80">Jackpot:</span>
         <span className={cn("font-semibold", isActive ? "text-primary" : "text-accent")}>{jackpotAmount.toLocaleString()}</span>
       </Button>
@@ -96,7 +102,6 @@ export default function Navbar() {
                 {item.name}
               </NavLink>
             ))}
-            {/* Live Jackpot Display for Desktop */}
             <LiveJackpotDisplay />
           </nav>
           <div className="ml-2 md:ml-4 flex items-center">
@@ -117,7 +122,7 @@ export default function Navbar() {
                 </Button>
               </Link>
             ) : (
-              <NavLink href="/login" icon={LogIn} isActiveOverride={pathname === '/login'}>
+              <NavLink href="/login" icon={LogIn} isActiveOverride={pathname === '/login' || pathname === '/signup'}>
                 Login
               </NavLink>
             )}
@@ -146,7 +151,7 @@ export default function Navbar() {
                   </SheetClose>
                 </div>
                 <nav className="flex-grow p-4 space-y-1 overflow-y-auto">
-                  {mobileNavItems.map((item) => ( // Use mobileNavItems for the sheet
+                  {mobileNavItems.map((item) => ( 
                     <NavLink key={item.name} href={item.href} onClick={() => setMobileMenuOpen(false)} icon={item.icon}>
                       {item.name}
                     </NavLink>
@@ -159,7 +164,7 @@ export default function Navbar() {
                         Profile ({currentUser.username.substring(0,10) + (currentUser.username.length > 10 ? '...' : '')})
                       </NavLink>
                   ) : (
-                     <NavLink href="/login" onClick={() => setMobileMenuOpen(false)} icon={LogIn}>
+                     <NavLink href="/login" onClick={() => setMobileMenuOpen(false)} icon={LogIn} isActiveOverride={pathname === '/login' || pathname === '/signup'}>
                         Login
                       </NavLink>
                   )}
