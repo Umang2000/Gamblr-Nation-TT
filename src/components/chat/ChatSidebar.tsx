@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect, useRef, FormEvent } from 'react';
-import { Send, User, X } from 'lucide-react';
+import { Send, User, ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -173,11 +173,11 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                 <Button
                   size="icon"
                   onClick={onClose}
-                  className="bg-[#E91E63] hover:bg-[#d81b60] text-white rounded-md p-2 flex items-center justify-center shrink-0"
+                  className="bg-[#E91E63] hover:bg-[#d81b60] text-white rounded-md p-2 flex items-center justify-center shrink-0" // Pink color
                   aria-label="Close chat"
                   style={{ width: '40px', height: '40px' }} 
                 >
-                  <X className="h-5 w-5" strokeWidth={2.5} />
+                  <ChevronLeft className="h-6 w-6" strokeWidth={2.5} />
                 </Button>
               </form>
             </div>
