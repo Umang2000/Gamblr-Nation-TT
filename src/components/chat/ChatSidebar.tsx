@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useRef, FormEvent } from 'react';
@@ -31,8 +32,6 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
 
   useEffect(() => {
     if (isOpen && messages.length === 0 && !isNameSet) {
-      // Only add welcome message if name is not set yet to avoid adding it multiple times
-      // if chat is closed and reopened before name is set.
       setMessages([
         { id: '1', text: 'Welcome to GamblrNation chat! Set your name to begin.', sender: 'bot', name: 'Support Bot', timestamp: new Date() }
       ]);
@@ -40,7 +39,6 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
   }, [isOpen, messages.length, isNameSet]);
   
   useEffect(() => {
-    // Auto-scroll to bottom
     if (scrollAreaRef.current) {
       const viewport = scrollAreaRef.current.querySelector('div[data-radix-scroll-area-viewport]');
       if (viewport) {
@@ -74,7 +72,6 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     setMessages((prevMessages) => [...prevMessages, userMessage]);
     setInputValue('');
 
-    // Simulate bot response
     setTimeout(() => {
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
@@ -86,9 +83,6 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
       setMessages((prevMessages) => [...prevMessages, botResponse]);
     }, 1000);
   };
-
-  // No need to render if not open, ChatSystem handles this
-  // if (!isOpen) return null; 
 
   return (
     <div className={cn(
@@ -102,8 +96,8 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
       <div className="flex flex-col h-full">
         <header className="flex items-center justify-between p-4 border-b border-border">
           <h2 id="chat-sidebar-title" className="text-lg font-semibold font-headline text-primary">Community Chat</h2>
-          <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close chat">
-            <ChevronLeft className="h-5 w-5 text-muted-foreground hover:text-primary" />
+          <Button variant="ghost" onClick={onClose} aria-label="Close chat" className="p-1">
+            <ChevronLeft className="h-6 w-6 text-primary hover:text-primary/80" />
           </Button>
         </header>
 
@@ -178,3 +172,4 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     </div>
   );
 }
+
