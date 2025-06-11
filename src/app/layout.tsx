@@ -6,6 +6,7 @@ import ChatSystem from '@/components/chat/ChatSystem';
 import SupportBubble from '@/components/support/SupportBubble';
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from '@/context/AuthContext';
+import { JackpotProvider } from '@/context/JackpotContext'; // Added JackpotProvider
 
 export const metadata: Metadata = {
   title: 'GamblrNation Hub',
@@ -28,13 +29,15 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased flex flex-col min-h-screen bg-background text-foreground">
         <AuthProvider>
-          <Navbar />
-          <main className="flex-grow container mx-auto px-4 py-8">
-            {children}
-          </main>
-          <ChatSystem />
-          <SupportBubble />
-          <Toaster />
+          <JackpotProvider> {/* JackpotProvider wraps Navbar and children */}
+            <Navbar />
+            <main className="flex-grow container mx-auto px-4 py-8">
+              {children}
+            </main>
+            <ChatSystem />
+            <SupportBubble />
+            <Toaster />
+          </JackpotProvider>
         </AuthProvider>
       </body>
     </html>

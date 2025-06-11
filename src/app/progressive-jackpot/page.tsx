@@ -1,10 +1,10 @@
+
 'use client';
 
-import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Trophy, Users, HelpCircle, Gem, DollarSign } from 'lucide-react';
+import { Trophy, HelpCircle, Gem, DollarSign } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useJackpot } from '@/context/JackpotContext'; // Import useJackpot
 
 interface Winner {
   username: string;
@@ -20,15 +20,7 @@ const pastWinners: Winner[] = [
 ];
 
 export default function ProgressiveJackpotPage() {
-  const [jackpotAmount, setJackpotAmount] = useState(50000); // Initial mock amount
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setJackpotAmount(prevAmount => prevAmount + Math.floor(Math.random() * 10) + 1);
-    }, 1500); // Update every 1.5 seconds
-
-    return () => clearInterval(interval);
-  }, []);
+  const { jackpotAmount } = useJackpot(); // Use jackpotAmount from context
 
   return (
     <div className="space-y-12">
@@ -80,7 +72,7 @@ export default function ProgressiveJackpotPage() {
                   <li key={index} className="flex items-center justify-between p-3 bg-card/50 rounded-md hover:bg-primary/10">
                     <div className="flex items-center space-x-3">
                        <Avatar className="h-10 w-10">
-                         <AvatarImage src={`https://placehold.co/40x40/201028/A050C3?text=${winner.avatarSeed}`} />
+                         <AvatarImage src={`https://placehold.co/40x40/CCCCCC/333333.png`} alt={winner.username} data-ai-hint="player avatar"/>
                          <AvatarFallback className="bg-primary text-primary-foreground">{winner.avatarSeed}</AvatarFallback>
                        </Avatar>
                       <div>
