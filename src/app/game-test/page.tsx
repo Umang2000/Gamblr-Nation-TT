@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -11,16 +12,15 @@ interface TestGame {
   title: string;
   status: 'Alpha' | 'Beta' | 'Released Candidate';
   description: string;
-  image: string;
-  imageHint: string;
+  imageHint: string; // Removed image, will use placeholder
   version: string;
   feedbackLink?: string;
 }
 
 const testGames: TestGame[] = [
-  { id: 'tg1', title: 'Project Chimera', status: 'Alpha', description: 'A genre-bending tactical RPG with experimental mechanics. Provide feedback on core gameplay loops.', image: 'https://placehold.co/600x400/A050C3/201028?text=Project+Chimera', imageHint: "fantasy creature prototype", version: '0.1.5a' },
-  { id: 'tg2', title: 'Void Runner Arena', status: 'Beta', description: 'Fast-paced multiplayer shooter with unique movement abilities. Focus testing on map balance and netcode.', image: 'https://placehold.co/600x400/E91E63/201028?text=Void+Runner', imageHint: "sci-fi arena shooter", version: '0.7.2b', feedbackLink: '#' },
-  { id: 'tg3', title: 'PuzzleVerse', status: 'Released Candidate', description: 'A mind-bending puzzle adventure with interconnected worlds. Final checks for bugs and polish.', image: 'https://placehold.co/600x400/4CAF50/201028?text=PuzzleVerse', imageHint: "abstract puzzle design", version: '0.9.9rc' },
+  { id: 'tg1', title: 'Project Chimera', status: 'Alpha', description: 'A genre-bending tactical RPG with experimental mechanics. Provide feedback on core gameplay loops.', imageHint: "fantasy creature", version: '0.1.5a' },
+  { id: 'tg2', title: 'Void Runner Arena', status: 'Beta', description: 'Fast-paced multiplayer shooter with unique movement abilities. Focus testing on map balance and netcode.', imageHint: "sci-fi arena", version: '0.7.2b', feedbackLink: '#' },
+  { id: 'tg3', title: 'PuzzleVerse', status: 'Released Candidate', description: 'A mind-bending puzzle adventure with interconnected worlds. Final checks for bugs and polish.', imageHint: "abstract puzzle", version: '0.9.9rc' },
 ];
 
 export default function GameTestPage() {
@@ -53,7 +53,7 @@ export default function GameTestPage() {
           <Card key={game.id} className="overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/30 glass-card flex flex-col">
             <CardHeader className="p-0">
               <div className="relative h-48 w-full">
-                <Image src={game.image} alt={game.title} layout="fill" objectFit="cover" data-ai-hint={game.imageHint}/>
+                <Image src="https://placehold.co/600x400/CCCCCC/333333.png" alt={game.title} layout="fill" objectFit="cover" data-ai-hint={game.imageHint}/>
                  <span className={`absolute top-2 right-2 px-2 py-1 text-xs font-semibold rounded-md border bg-card/70 backdrop-blur-sm ${getStatusColor(game.status)}`}>
                     {game.status} - v{game.version}
                   </span>

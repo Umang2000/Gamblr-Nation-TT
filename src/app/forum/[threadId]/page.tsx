@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -34,7 +35,7 @@ interface Post {
 
 export default function ThreadDetailPage({ params }: { params: { threadId: string } }) {
   const [replyContent, setReplyContent] = useState('');
-  const [posts, setPosts] = useState<Post[]>(mockPosts); // Local state for posts to allow adding new ones
+  const [posts, setPosts] = useState<Post[]>(mockPosts); 
 
   const handleReplySubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -42,7 +43,7 @@ export default function ThreadDetailPage({ params }: { params: { threadId: strin
 
     const newReply: Post = {
       id: `p${Date.now()}`,
-      author: 'CurrentUser', // In a real app, this would be the logged-in user
+      author: 'CurrentUser', 
       avatarSeed: 'User',
       createdAt: 'Just now',
       content: replyContent,
@@ -85,7 +86,7 @@ export default function ThreadDetailPage({ params }: { params: { threadId: strin
           <Card key={post.id} className="glass-card">
             <CardHeader className="flex flex-row items-start space-x-4">
               <Avatar>
-                <AvatarImage src={`https://placehold.co/40x40/201028/A050C3?text=${post.avatarSeed.substring(0,1)}`} />
+                <AvatarImage src="https://placehold.co/40x40/CCCCCC/333333.png" alt={post.author} data-ai-hint="user avatar" />
                 <AvatarFallback className="bg-accent text-accent-foreground">{post.avatarSeed.substring(0,1)}</AvatarFallback>
               </Avatar>
               <div>

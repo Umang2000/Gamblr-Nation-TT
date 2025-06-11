@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { PlayCircle, CalendarClock, Users } from 'lucide-react';
@@ -28,7 +29,6 @@ export default function LiveStreamPage() {
         </CardHeader>
         <CardContent>
           <div className="aspect-video bg-black rounded-lg overflow-hidden border border-primary/30">
-            {/* In a real app, ensure the parent domain is correctly configured for Twitch embeds */}
             <iframe
               src={twitchEmbedUrl}
               height="100%"
@@ -41,7 +41,7 @@ export default function LiveStreamPage() {
            <div className="mt-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Avatar>
-                <AvatarImage src={`https://placehold.co/40x40/201028/A050C3?text=${featuredStreamer.avatarSeed}`} />
+                <AvatarImage src="https://placehold.co/40x40/CCCCCC/333333.png" alt={featuredStreamer.name} data-ai-hint="streamer avatar" />
                 <AvatarFallback>{featuredStreamer.avatarSeed}</AvatarFallback>
               </Avatar>
               <span className="font-semibold">{featuredStreamer.name}</span>
@@ -65,7 +65,7 @@ export default function LiveStreamPage() {
             <Card key={streamer.id} className="flex flex-col md:flex-row items-center justify-between p-4 bg-card/50 hover:border-primary/50 transition-colors">
               <div className="flex items-center space-x-4 mb-2 md:mb-0">
                 <Avatar className="h-12 w-12">
-                  <AvatarImage src={`https://placehold.co/60x60/201028/A050C3?text=${streamer.avatarSeed}`} />
+                  <AvatarImage src="https://placehold.co/60x60/CCCCCC/333333.png" alt={streamer.name} data-ai-hint="streamer avatar" />
                   <AvatarFallback className="bg-primary text-primary-foreground">{streamer.avatarSeed}</AvatarFallback>
                 </Avatar>
                 <div>

@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -14,20 +15,19 @@ interface MarketItem {
   name: string;
   category: string;
   price: number;
-  image: string;
-  imageHint: string;
+  imageHint: string; 
   description: string;
   rarity?: 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary';
   stock?: number;
 }
 
 const marketItems: MarketItem[] = [
-  { id: '1', name: 'Cosmic Guardian Skin', category: 'Skins', price: 1200, image: 'https://placehold.co/600x400/A050C3/201028?text=Cosmic+Skin', imageHint: "space armor character", description: "Stand out with this legendary cosmic guardian armor set.", rarity: 'Legendary', stock: 10 },
-  { id: '2', name: 'Neon Edge Weapon Skin', category: 'Skins', price: 800, image: 'https://placehold.co/600x400/E91E63/201028?text=Neon+Weapon', imageHint: "glowing sword game", description: "A sleek, glowing weapon skin for your favorite blade.", rarity: 'Epic', stock: 25 },
-  { id: '3', name: '1000 GamblrCoins', category: 'Coins', price: 10, image: 'https://placehold.co/600x400/FFD700/201028?text=1000+Coins', imageHint: "gold coins stack", description: "Get 1000 GamblrCoins to spend in-game or on the marketplace.", rarity: 'Common' },
-  { id: '4', name: 'Rare Loot Crate', category: 'Loot Box', price: 500, image: 'https://placehold.co/600x400/4CAF50/201028?text=Loot+Crate', imageHint: "treasure chest mystery", description: "Contains a random assortment of rare items.", rarity: 'Rare', stock: 50 },
-  { id: '5', name: 'Profile Banner - Nebula', category: 'Profile Customization', price: 300, image: 'https://placehold.co/600x400/03A9F4/201028?text=Nebula+Banner', imageHint: "space nebula profile", description: "Customize your profile with this stunning nebula banner.", rarity: 'Uncommon' },
-  { id: '6', name: 'XP Boost (7 Days)', category: 'Boosters', price: 750, image: 'https://placehold.co/600x400/FF9800/201028?text=XP+Boost', imageHint: "arrow up progress", description: "Double your experience points for 7 days.", rarity: 'Uncommon', stock: 100 },
+  { id: '1', name: 'Cosmic Guardian Skin', category: 'Skins', price: 1200, imageHint: "space armor", description: "Stand out with this legendary cosmic guardian armor set.", rarity: 'Legendary', stock: 10 },
+  { id: '2', name: 'Neon Edge Weapon Skin', category: 'Skins', price: 800, imageHint: "glowing sword", description: "A sleek, glowing weapon skin for your favorite blade.", rarity: 'Epic', stock: 25 },
+  { id: '3', name: '1000 GamblrCoins', category: 'Coins', price: 10, imageHint: "gold coins", description: "Get 1000 GamblrCoins to spend in-game or on the marketplace.", rarity: 'Common' },
+  { id: '4', name: 'Rare Loot Crate', category: 'Loot Box', price: 500, imageHint: "treasure chest", description: "Contains a random assortment of rare items.", rarity: 'Rare', stock: 50 },
+  { id: '5', name: 'Profile Banner - Nebula', category: 'Profile Customization', price: 300, imageHint: "space nebula", description: "Customize your profile with this stunning nebula banner.", rarity: 'Uncommon' },
+  { id: '6', name: 'XP Boost (7 Days)', category: 'Boosters', price: 750, imageHint: "xp boost", description: "Double your experience points for 7 days.", rarity: 'Uncommon', stock: 100 },
 ];
 
 const categories = ['All', 'Skins', 'Coins', 'Loot Box', 'Profile Customization', 'Boosters'];
@@ -114,7 +114,7 @@ export default function MarketplacePage() {
             <Card key={item.id} className="overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/30 glass-card flex flex-col">
               <CardHeader className="p-0">
                 <div className="relative h-56 w-full">
-                  <Image src={item.image} alt={item.name} layout="fill" objectFit="cover" data-ai-hint={item.imageHint}/>
+                  <Image src="https://placehold.co/600x400/CCCCCC/333333.png" alt={item.name} layout="fill" objectFit="cover" data-ai-hint={item.imageHint}/>
                   {item.rarity && (
                     <span className={`absolute top-2 right-2 px-2 py-1 text-xs font-semibold rounded-md border bg-card/70 backdrop-blur-sm ${getRarityColor(item.rarity)}`}>
                       {item.rarity}

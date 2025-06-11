@@ -7,15 +7,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { ArrowLeft, Star, Zap, Dices, CircleDot, CoinsIcon as CoinflipIcon, Landmark, Spade } from 'lucide-react';
 
-// Mock game data - in a real app, fetch this based on gameId
+// Mock game data
 const gameDetailsData: { [key: string]: any } = {
   roulette: { 
     id: 'roulette', 
     title: 'Roulette', 
     genre: 'Casino', 
     rating: 4.3, 
-    image: 'https://placehold.co/800x450/E53935/FFFFFF?text=Roulette', 
-    imageHint: "roulette wheel casino",
+    imageHint: "roulette casino",
     description: "Spin the wheel and try your luck!", 
     longDescription: "Experience the thrill of the classic casino game, Roulette. Place your bets on your lucky numbers, colors, or sections of the wheel. Watch as the ball spins and hope it lands in your favor. This is a simplified mock version focusing on the spin and random outcome.",
     icon: CircleDot,
@@ -25,8 +24,7 @@ const gameDetailsData: { [key: string]: any } = {
     title: 'Coinflip', 
     genre: 'Casino', 
     rating: 4.0, 
-    image: 'https://placehold.co/800x450/FFB300/FFFFFF?text=Coinflip', 
-    imageHint: "flipping coin heads",
+    imageHint: "flipping coin",
     description: "Heads or Tails? Make your choice.", 
     longDescription: "The simplest game of chance! Call heads or tails and see if fate is on your side. This mock-up simulates a coin flip with a random outcome.",
     icon: CoinflipIcon,
@@ -36,8 +34,7 @@ const gameDetailsData: { [key: string]: any } = {
     title: 'Dice Roll', 
     genre: 'Casino', 
     rating: 4.1, 
-    image: 'https://placehold.co/800x450/43A047/FFFFFF?text=Dice', 
-    imageHint: "rolling dice game",
+    imageHint: "dice game",
     description: "Roll the dice and see what you get.", 
     longDescription: "Roll one or more dice and see the outcome. A fundamental game of chance, perfect for quick fun. This version simulates rolling two standard six-sided dice.",
     icon: Dices,
@@ -47,8 +44,7 @@ const gameDetailsData: { [key: string]: any } = {
     title: 'Slots', 
     genre: 'Casino', 
     rating: 4.2, 
-    image: 'https://placehold.co/800x450/1E88E5/FFFFFF?text=Slots', 
-    imageHint: "slot machine jackpot",
+    imageHint: "slot machine",
     description: "Spin the reels for a chance to win big!", 
     longDescription: "Try your luck with our classic slot machine mock-up. Spin the reels and match the symbols to get a (simulated) win. Features three reels with common slot symbols.",
     icon: Landmark,
@@ -58,8 +54,7 @@ const gameDetailsData: { [key: string]: any } = {
     title: 'Blackjack', 
     genre: 'Casino', 
     rating: 4.5, 
-    image: 'https://placehold.co/800x450/8E24AA/FFFFFF?text=Blackjack', 
-    imageHint: "blackjack cards table",
+    imageHint: "blackjack cards",
     description: "Try to beat the dealer and get 21.", 
     longDescription: "The classic card game of 21. Try to get closer to 21 than the dealer without going over. This is a very simplified mock-up allowing you to 'Hit' or 'Stand'.",
     icon: Spade,
@@ -100,7 +95,7 @@ export default function GameDetailPage({ params }: { params: { gameId: string } 
 
       <Card className="overflow-hidden glass-card">
         <CardHeader className="p-0 relative h-64 md:h-96">
-          <Image src={game.image} alt={game.title} layout="fill" objectFit="cover" priority data-ai-hint={game.imageHint}/>
+          <Image src="https://placehold.co/800x450/CCCCCC/333333.png" alt={game.title} layout="fill" objectFit="cover" priority data-ai-hint={game.imageHint}/>
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
           <div className="absolute bottom-0 left-0 p-6">
             <CardTitle className="text-4xl md:text-5xl font-bold text-white text-glow-primary flex items-center">

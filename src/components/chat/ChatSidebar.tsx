@@ -36,8 +36,8 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
   const { toast } = useToast();
 
   const botName = "Gamblr Nation Bot";
-  const botAvatarPlaceholder = "https://placehold.co/40x40/A050C3/FFFFFF?text=GN"; // Accent background, white "GN"
-  const botAvatarHint = "cartoon monkey"; // AI hint for the desired image
+  const botAvatarPlaceholder = "https://placehold.co/40x40/CCCCCC/333333.png";
+  const botAvatarHint = "cartoon monkey";
 
   useEffect(() => {
     if (isOpen && !authIsLoading) {
@@ -148,7 +148,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                         <>
                           <AvatarImage src={msg.avatar} alt={msg.name} data-ai-hint={msg.botAvatarHint} />
                           <AvatarFallback className="bg-accent text-accent-foreground">
-                             {botName === "Gamblr Nation Bot" ? "GN" : botName.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase()}
+                             GN
                           </AvatarFallback>
                         </>
                       )}
@@ -161,7 +161,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                           'p-3 rounded-lg text-sm font-normal min-w-0', 
                           isUserMessage
                             ? 'bg-primary text-primary-foreground rounded-br-none break-all' 
-                            : 'bg-secondary text-secondary-foreground rounded-bl-none break-all' 
+                            : 'bg-secondary text-secondary-foreground rounded-bl-none break-words' // Use break-words for bot
                         )}
                       >
                         {msg.text}
@@ -223,5 +223,3 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     </div>
   );
 }
-
-    

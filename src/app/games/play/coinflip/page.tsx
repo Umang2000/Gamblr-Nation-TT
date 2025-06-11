@@ -47,7 +47,7 @@ export default function CoinflipPlayPage() {
             ) : result ? (
               <p className="text-4xl font-bold text-accent">{result}</p>
             ) : (
-               <Image src="https://placehold.co/150x150/FFD700/000000?text=?" alt="Coin" width={144} height={144} className="rounded-full" data-ai-hint="gold coin question"/>
+               <Image src="https://placehold.co/144x144/CCCCCC/333333.png" alt="Coin" width={144} height={144} className="rounded-full" data-ai-hint="coin flip"/>
             )}
           </div>
           

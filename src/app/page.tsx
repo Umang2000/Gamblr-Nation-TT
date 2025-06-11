@@ -1,3 +1,4 @@
+
 import HeroSection from '@/components/home/HeroSection';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Gamepad2, Users, Trophy } from 'lucide-react';
@@ -36,22 +37,19 @@ export default function HomePage() {
             icon={<Gamepad2 className="h-10 w-10 text-accent" />}
             title="Diverse Games"
             description="Explore a wide variety of games, from classic favorites to new challenges."
-            imageUrl="https://placehold.co/600x400/A050C3/201028?text=Diverse+Games"
             imageHint="gaming variety"
           />
           <FeatureCard
             icon={<Users className="h-10 w-10 text-accent" />}
             title="Active Community"
             description="Join discussions, share tips, and connect with fellow gamers in our forums."
-            imageUrl="https://placehold.co/600x400/A050C3/201028?text=Community"
-            imageHint="gaming community discussion"
+            imageHint="gaming community"
           />
           <FeatureCard
             icon={<Trophy className="h-10 w-10 text-accent" />}
             title="Compete & Win"
             description="Climb the leaderboards, participate in events, and earn exclusive rewards."
-            imageUrl="https://placehold.co/600x400/A050C3/201028?text=Leaderboards"
-            imageHint="gaming trophy achievement"
+            imageHint="gaming trophy"
           />
         </div>
       </section>
@@ -63,11 +61,10 @@ interface FeatureCardProps {
   icon: React.ReactNode;
   title: string;
   description: string;
-  imageUrl: string;
   imageHint: string;
 }
 
-function FeatureCard({ icon, title, description, imageUrl, imageHint }: FeatureCardProps) {
+function FeatureCard({ icon, title, description, imageHint }: FeatureCardProps) {
   return (
     <Card className="text-center overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/30 glass-card">
       <CardHeader className="items-center">
@@ -78,7 +75,7 @@ function FeatureCard({ icon, title, description, imageUrl, imageHint }: FeatureC
       </CardHeader>
       <CardContent>
         <div className="relative h-40 w-full mb-4 rounded-md overflow-hidden">
-          <Image src={imageUrl} alt={title} layout="fill" objectFit="cover" data-ai-hint={imageHint} />
+          <Image src="https://placehold.co/600x400/CCCCCC/333333.png" alt={title} layout="fill" objectFit="cover" data-ai-hint={imageHint} />
         </div>
         <p className="text-foreground/80">{description}</p>
       </CardContent>

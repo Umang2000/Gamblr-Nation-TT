@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -31,13 +32,13 @@ export default function HeroSection() {
       <div className="mt-16 md:mt-24 max-w-5xl mx-auto px-4">
         <div className="aspect-video rounded-lg overflow-hidden shadow-2xl element-glow-primary">
           <Image
-            src="https://placehold.co/1280x720/A050C3/201028?text=Game+Highlights"
+            src="https://placehold.co/1280x720/CCCCCC/333333.png"
             alt="Dynamic Banner Showcasing Game Highlights"
             width={1280}
             height={720}
             className="w-full h-full object-cover"
             priority
-            data-ai-hint="game highlights action"
+            data-ai-hint="game highlights"
           />
         </div>
       </div>

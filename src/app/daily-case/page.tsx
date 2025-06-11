@@ -1,8 +1,9 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Gift, Zap, Coins, Shield } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -38,19 +39,15 @@ export default function DailyCasePage() {
   const { toast } = useToast();
   const [isSpinning, setIsSpinning] = useState(false);
   const [revealedReward, setRevealedReward] = useState<Reward | null>(null);
-  const [canClaim, setCanClaim] = useState(true); // In a real app, manage this with localStorage/backend
+  const [canClaim, setCanClaim] = useState(true); 
 
   useEffect(() => {
-    // Check if already claimed today from localStorage
     const lastClaimed = localStorage.getItem('dailyCaseLastClaimed');
     if (lastClaimed) {
       const lastClaimDate = new Date(lastClaimed);
       const today = new Date();
       if (lastClaimDate.toDateString() === today.toDateString()) {
         setCanClaim(false);
-        // Set a placeholder reward if already claimed to show what was last won.
-        // This part is optional, depends on desired UX.
-        // For now, we just disable claim.
       }
     }
   }, []);
@@ -68,10 +65,10 @@ export default function DailyCasePage() {
       const reward = possibleRewards[randomIndex];
       setRevealedReward(reward);
       setIsSpinning(false);
-      setCanClaim(false); // Mark as claimed for this session
-      localStorage.setItem('dailyCaseLastClaimed', new Date().toISOString()); // Store claim time
+      setCanClaim(false); 
+      localStorage.setItem('dailyCaseLastClaimed', new Date().toISOString()); 
       toast({ title: "Reward Claimed!", description: `You got: ${reward.name} (${reward.rarity})`, variant: "default" });
-    }, 2000); // Spin duration
+    }, 2000); 
   };
 
   return (
@@ -89,7 +86,7 @@ export default function DailyCasePage() {
             isSpinning ? "animate-spin-y-once" : ""
           )}>
             <Image 
-              src={revealedReward ? `https://placehold.co/256x256/201028/FFFFFF?text=${revealedReward.name.substring(0,1)}` : "https://placehold.co/256x256/A050C3/201028?text=GN"}
+              src="https://placehold.co/256x256/CCCCCC/333333.png"
               alt={revealedReward ? revealedReward.name : "Daily Case"}
               width={256}
               height={256}
@@ -98,7 +95,7 @@ export default function DailyCasePage() {
                 isSpinning ? "opacity-50 scale-90" : "opacity-100 scale-100",
                 revealedReward ? `border-4 ${getRarityColor(revealedReward.rarity)} shadow-lg` : 'border-4 border-primary element-glow-primary'
               )}
-              data-ai-hint={revealedReward ? revealedReward.imageHint : "mystery box gift"}
+              data-ai-hint={revealedReward ? revealedReward.imageHint : "mystery box"}
             />
           </div>
           
@@ -125,7 +122,6 @@ export default function DailyCasePage() {
         </CardFooter>
       </Card>
       
-      {/* Display a "Come back tomorrow" message if already claimed */}
       {!canClaim && (
         <p className="text-muted-foreground mt-4">
           Next claim available tomorrow.

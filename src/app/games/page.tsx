@@ -8,18 +8,17 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Filter, Star, Zap, Users, Dices, CircleDot, CoinsIcon as CoinflipIcon, Landmark, Spade } from 'lucide-react'; // Added new icons
+import { Search, Filter, Star, Zap, Dices, CircleDot, CoinsIcon as CoinflipIcon, Landmark, Spade } from 'lucide-react';
 
-// New game data
 const allGames = [
-  { id: 'roulette', title: 'Roulette', genre: 'Casino', rating: 4.3, players: 0, image: 'https://placehold.co/600x400/E53935/FFFFFF?text=Roulette', imageHint: "roulette wheel casino", description: "Spin the wheel and try your luck!" },
-  { id: 'coinflip', title: 'Coinflip', genre: 'Casino', rating: 4.0, players: 0, image: 'https://placehold.co/600x400/FFB300/FFFFFF?text=Coinflip', imageHint: "flipping coin heads", description: "Heads or Tails? Make your choice." },
-  { id: 'dice-roll', title: 'Dice Roll', genre: 'Casino', rating: 4.1, players: 0, image: 'https://placehold.co/600x400/43A047/FFFFFF?text=Dice', imageHint: "rolling dice game", description: "Roll the dice and see what you get." },
-  { id: 'slots', title: 'Slots', genre: 'Casino', rating: 4.2, players: 0, image: 'https://placehold.co/600x400/1E88E5/FFFFFF?text=Slots', imageHint: "slot machine jackpot", description: "Spin the reels for a chance to win big!" },
-  { id: 'blackjack', title: 'Blackjack', genre: 'Casino', rating: 4.5, players: 0, image: 'https://placehold.co/600x400/8E24AA/FFFFFF?text=Blackjack', imageHint: "blackjack cards table", description: "Try to beat the dealer and get 21." },
+  { id: 'roulette', title: 'Roulette', genre: 'Casino', rating: 4.3, imageHint: "roulette casino", description: "Spin the wheel and try your luck!" },
+  { id: 'coinflip', title: 'Coinflip', genre: 'Casino', rating: 4.0, imageHint: "flipping coin", description: "Heads or Tails? Make your choice." },
+  { id: 'dice-roll', title: 'Dice Roll', genre: 'Casino', rating: 4.1, imageHint: "dice game", description: "Roll the dice and see what you get." },
+  { id: 'slots', title: 'Slots', genre: 'Casino', rating: 4.2, imageHint: "slot machine", description: "Spin the reels for a chance to win big!" },
+  { id: 'blackjack', title: 'Blackjack', genre: 'Casino', rating: 4.5, imageHint: "blackjack cards", description: "Try to beat the dealer and get 21." },
 ];
 
-const genres = ['All', 'Casino']; // Updated genres
+const genres = ['All', 'Casino']; 
 const sortOptions = [
   { value: 'title_asc', label: 'Title (A-Z)' },
   { value: 'title_desc', label: 'Title (Z-A)' },
@@ -109,7 +108,7 @@ export default function GamesPage() {
             <Card key={game.id} className="overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/30 glass-card flex flex-col">
               <CardHeader className="p-0">
                 <div className="relative h-48 w-full">
-                  <Image src={game.image} alt={game.title} layout="fill" objectFit="cover" data-ai-hint={game.imageHint} />
+                  <Image src="https://placehold.co/600x400/CCCCCC/333333.png" alt={game.title} layout="fill" objectFit="cover" data-ai-hint={game.imageHint} />
                 </div>
               </CardHeader>
               <CardContent className="p-4 flex-grow">
@@ -120,7 +119,6 @@ export default function GamesPage() {
                 <CardDescription className="text-sm text-muted-foreground mb-1">Genre: {game.genre}</CardDescription>
                 <div className="flex items-center space-x-4 text-sm text-foreground/80 mb-3">
                   <span className="flex items-center"><Star className="h-4 w-4 mr-1 text-yellow-400" /> {game.rating}/5.0</span>
-                  {/* <span className="flex items-center"><Users className="h-4 w-4 mr-1 text-primary" /> {game.players.toLocaleString()} Players</span> */}
                 </div>
                 <p className="text-foreground/80 text-sm mb-4 h-12 overflow-hidden text-ellipsis">{game.description}</p>
               </CardContent>

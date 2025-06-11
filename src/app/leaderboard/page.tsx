@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -11,7 +12,7 @@ interface Player {
   rank: number;
   username: string;
   score: number;
-  avatarSeed: string; // For placeholder avatar
+  avatarSeed: string; 
   gamesPlayed?: number;
   winRate?: string;
 }
@@ -58,7 +59,7 @@ const LeaderboardTable = ({ players, type }: { players: Player[]; type: 'weekly'
                 <TableCell>
                   <div className="flex items-center space-x-3">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={`https://placehold.co/40x40/201028/${player.rank <=3 ? 'E91E63' : 'A050C3'}?text=${player.avatarSeed}`} alt={player.username} />
+                      <AvatarImage src="https://placehold.co/40x40/CCCCCC/333333.png" alt={player.username} data-ai-hint="player avatar"/>
                       <AvatarFallback className={player.rank <= 3 ? 'bg-accent text-accent-foreground' : 'bg-primary text-primary-foreground'}>{player.avatarSeed}</AvatarFallback>
                     </Avatar>
                     <span className="font-medium text-foreground/90">{player.username}</span>
