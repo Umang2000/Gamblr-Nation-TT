@@ -48,7 +48,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     if (isOpen && !authIsLoading) {
       if (currentUser) {
         setMessages([
-          { id: 'welcome-bot', text: `Hi ${currentUser.username}! How can I help you?`, sender: 'bot', name: botName, timestamp: new Date(), avatar: botAvatarPlaceholder, botAvatarHint: botAvatarHint }
+          { id: 'welcome-bot', text: `Hi ${currentUser.username}! How can I help you? (Simulated)`, sender: 'bot', name: botName, timestamp: new Date(), avatar: botAvatarPlaceholder, botAvatarHint: botAvatarHint }
         ]);
       } else {
         setMessages([
@@ -74,8 +74,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
       setInputValue(value);
     } else {
       setInputValue(value.substring(0, MAX_CHAT_LENGTH));
-      // Optionally, show a toast for max length reached
-      // toast({ title: "Character limit reached", description: `Maximum ${MAX_CHAT_LENGTH} characters allowed.`, variant: "destructive" });
+      toast({ title: "Character limit reached", description: `Maximum ${MAX_CHAT_LENGTH} characters allowed.`, variant: "destructive" });
     }
   };
 
@@ -131,7 +130,8 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
 
   return (
     <div className={cn(
-      "fixed inset-y-0 left-0 z-40 w-80 bg-card text-card-foreground border-r border-border shadow-xl transform transition-transform duration-300 ease-in-out",
+      "fixed left-0 z-40 w-80 bg-card text-card-foreground border-r border-border shadow-xl transform transition-transform duration-300 ease-in-out",
+      "top-16 h-[calc(100vh-4rem)]", // Adjusted top and height
       isOpen ? "translate-x-0" : "-translate-x-full"
     )}
       role="dialog"
@@ -222,7 +222,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                 placeholder={authIsLoading ? "Checking login..." : (currentUser ? "Type Message Here..." : "Log in to chat...")}
                 className="flex-grow bg-input text-foreground placeholder:text-muted-foreground pr-10 rounded-md" // Added pr-10 for emoji button
                 aria-label="Chat message input"
-                disabled={authIsLoading && !isOpen && !currentUser}
+                disabled={authIsLoading || !currentUser}
               />
               <Button
                 type="button"
