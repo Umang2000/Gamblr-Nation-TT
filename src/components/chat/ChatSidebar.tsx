@@ -97,7 +97,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     setTimeout(() => {
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: `Thanks for your message, ${currentUser.username}! This is a simulated response from GamblrBot.`,
+        text: `Thanks for your message, ${currentUser.username}! This is a simulated response from GamblrBot. I can also write longer messages that should wrap correctly to multiple lines if needed, just like a paragraph.`,
         sender: 'bot',
         name: 'Support Bot',
         avatar: `https://placehold.co/40x40/32080a/FFFFFF?text=B`,
@@ -135,7 +135,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                     </Avatar>
                   )}
                   
-                  <div className={`flex flex-col gap-0.5 ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
+                  <div className={`flex flex-col gap-0.5 min-w-0 ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
                     <span className="text-xs font-semibold text-foreground px-1">{msg.name}</span>
                     
                     <div
@@ -215,3 +215,4 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     </div>
   );
 }
+
