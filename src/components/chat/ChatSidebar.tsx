@@ -1,8 +1,8 @@
 
 'use client';
 
-import { useState, useEffect, useRef, FormEvent } from 'react';
-import { Send, User as UserIconLucide, ChevronLeft } from 'lucide-react';
+import { useState, useEffect, useRef, FormEvent, ChangeEvent } from 'react';
+import { Send, User as UserIconLucide, ChevronLeft, Skull, Smile, Info, MessageSquareText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from '@/context/AuthContext';
+import ChatRulesDialog from './ChatRulesDialog'; // Import the new dialog
 
 interface ChatSidebarProps {
   isOpen: boolean;
@@ -28,15 +29,19 @@ interface Message {
   botAvatarHint?: string;
 }
 
+const MAX_CHAT_LENGTH = 160;
+const MOCK_LIVE_USERS = 376;
+
 export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
   const { currentUser, isLoading: authIsLoading } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const [isRulesOpen, setIsRulesOpen] = useState(false);
 
   const botName = "Gamblr Nation Bot";
-  const botAvatarPlaceholder = "https://placehold.co/40x40/CCCCCC/333333.png";
+  const botAvatarPlaceholder = "https://placehold.co/40x40/A050C3/FFFFFF?text=GN";
   const botAvatarHint = "cartoon monkey";
 
   useEffect(() => {
@@ -63,6 +68,16 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     }
   }, [messages]);
 
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value.length <= MAX_CHAT_LENGTH) {
+      setInputValue(value);
+    } else {
+      setInputValue(value.substring(0, MAX_CHAT_LENGTH));
+      // Optionally, show a toast for max length reached
+      // toast({ title: "Character limit reached", description: `Maximum ${MAX_CHAT_LENGTH} characters allowed.`, variant: "destructive" });
+    }
+  };
 
   const handleSendMessage = (e: FormEvent) => {
     e.preventDefault();
@@ -111,6 +126,8 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
       setMessages((prevMessages) => [...prevMessages, botResponse]);
     }, 1000);
   };
+  
+  const characterCount = MAX_CHAT_LENGTH - inputValue.length;
 
   return (
     <div className={cn(
@@ -122,8 +139,25 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
       aria-labelledby="chat-sidebar-title"
     >
       <div className="flex flex-col h-full">
-        <header className="flex items-center justify-between p-4 border-b border-border">
-          <h2 id="chat-sidebar-title" className="text-lg font-semibold font-headline text-primary">Community Chat</h2>
+        <header className="flex items-center justify-between p-3 border-b border-border">
+          <div className="flex items-center gap-2">
+            <Skull className="h-5 w-5 text-muted-foreground" />
+            <h2 id="chat-sidebar-title" className="text-md font-semibold text-foreground">Degen Chat</h2>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="h-2.5 w-2.5 bg-primary rounded-full" />
+            <span className="text-sm font-medium text-primary">{MOCK_LIVE_USERS}</span>
+          </div>
+          <Button
+            type="button"
+            size="icon"
+            variant="ghost"
+            onClick={onClose}
+            className="text-muted-foreground hover:text-foreground h-7 w-7"
+            aria-label="Close chat"
+          >
+            <ChevronLeft className="h-5 w-5" strokeWidth={2.5} />
+          </Button>
         </header>
 
         <ScrollArea className="flex-grow p-4" ref={scrollAreaRef}>
@@ -133,7 +167,6 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
               return (
                 <div key={msg.id} className={`flex ${isUserMessage ? 'justify-end' : 'justify-start'}`}>
                   <div className={cn('flex items-start gap-2.5 max-w-[80%]' , isUserMessage ? 'flex-row-reverse' : 'flex-row')}>
-                    
                     <Avatar className="h-8 w-8 shrink-0">
                       {isUserMessage && currentUser ? (
                         <>
@@ -147,13 +180,10 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                       ) : ( 
                         <>
                           <AvatarImage src={msg.avatar} alt={msg.name} data-ai-hint={msg.botAvatarHint} />
-                          <AvatarFallback className="bg-accent text-accent-foreground">
-                             GN
-                          </AvatarFallback>
+                          <AvatarFallback className="bg-accent text-accent-foreground">GN</AvatarFallback>
                         </>
                       )}
                     </Avatar>
-                    
                     <div className={cn('flex flex-col gap-0.5 min-w-0', isUserMessage ? 'items-end' : 'items-start')}>
                       <span className="text-xs font-semibold text-foreground px-1">{msg.name}</span>
                       <div
@@ -161,7 +191,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                           'p-3 rounded-lg text-sm font-normal min-w-0', 
                           isUserMessage
                             ? 'bg-primary text-primary-foreground rounded-br-none break-all' 
-                            : 'bg-secondary text-secondary-foreground rounded-bl-none break-words' // Use break-words for bot
+                            : 'bg-secondary text-secondary-foreground rounded-bl-none break-all'
                         )}
                       >
                         {msg.text}
@@ -182,17 +212,28 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
           </div>
         </ScrollArea>
 
-        <div className="p-4 border-t border-border">
+        <div className="p-3 border-t border-border space-y-2">
           <form onSubmit={handleSendMessage} className="flex items-center space-x-2">
-            <Input
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              placeholder={authIsLoading ? "Checking login..." : (currentUser ? "Type a message..." : "Log in to chat...")}
-              className="flex-grow bg-input text-foreground placeholder:text-muted-foreground"
-              aria-label="Chat message input"
-              disabled={authIsLoading && !isOpen && !currentUser}
-            />
+            <div className="relative flex-grow">
+              <Input
+                type="text"
+                value={inputValue}
+                onChange={handleInputChange}
+                placeholder={authIsLoading ? "Checking login..." : (currentUser ? "Type Message Here..." : "Log in to chat...")}
+                className="flex-grow bg-input text-foreground placeholder:text-muted-foreground pr-10 rounded-md" // Added pr-10 for emoji button
+                aria-label="Chat message input"
+                disabled={authIsLoading && !isOpen && !currentUser}
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-primary"
+                aria-label="Open emoji picker" // Add functionality later
+              >
+                <Smile className="h-5 w-5" />
+              </Button>
+            </div>
             <Button
               type="submit"
               size="icon"
@@ -202,24 +243,28 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
             >
               <Send className="h-5 w-5" />
             </Button>
-            <Button
-              type="button"
-              size="icon"
-              onClick={onClose}
-              className="bg-[#E91E63] hover:bg-[#d81b60] text-white rounded-md p-2 flex items-center justify-center shrink-0"
-              aria-label="Close chat"
-              style={{ width: '40px', height: '40px' }}
-            >
-              <ChevronLeft className="h-6 w-6" strokeWidth={2.5} />
-            </Button>
           </form>
+           <div className="flex items-center justify-between text-xs text-muted-foreground">
+            <Button 
+              variant="link" 
+              className="p-0 h-auto text-xs text-muted-foreground hover:text-primary flex items-center gap-1"
+              onClick={() => setIsRulesOpen(true)}
+            >
+              <Info className="h-3.5 w-3.5" /> Chat Rules
+            </Button>
+            <div className="flex items-center gap-1">
+              <MessageSquareText className="h-3.5 w-3.5" />
+              <span>{characterCount}</span>
+            </div>
+          </div>
           {!authIsLoading && !currentUser && isOpen && (
-             <p className="text-xs text-muted-foreground mt-2 text-center">
+             <p className="text-xs text-muted-foreground mt-1 text-center">
               Want to join the conversation? <Link href="/login" className="text-primary hover:underline font-semibold">Log In</Link> or <Link href="/signup" className="text-primary hover:underline font-semibold">Sign Up</Link>.
             </p>
           )}
         </div>
       </div>
+      <ChatRulesDialog isOpen={isRulesOpen} onOpenChange={setIsRulesOpen} />
     </div>
   );
 }
