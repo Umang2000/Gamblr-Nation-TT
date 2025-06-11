@@ -22,8 +22,8 @@ interface Message {
   text: string;
   sender: 'user' | 'bot';
   name: string;
-  avatar?: string;
-  userAvatarUrl?: string;
+  avatar?: string; // For bot avatar
+  userAvatarUrl?: string; // For user avatar
   timestamp: Date;
   botAvatarHint?: string;
 }
@@ -35,18 +35,19 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
-  const botAvatarPlaceholder = "https://placehold.co/40x40/FFFFFF/201028?text=B";
-  const botAvatarHint = "marshmello bot";
+  const botName = "Gamblr Nation Bot";
+  const botAvatarPlaceholder = "https://placehold.co/40x40/A050C3/FFFFFF?text=GN"; // Accent background, white "GN"
+  const botAvatarHint = "gamblr nation bot";
 
   useEffect(() => {
     if (isOpen && !authIsLoading) {
       if (currentUser) {
         setMessages([
-          { id: 'welcome-bot', text: `Hi ${currentUser.username}! How can I help you?`, sender: 'bot', name: 'Support Bot', timestamp: new Date(), avatar: botAvatarPlaceholder, botAvatarHint: botAvatarHint }
+          { id: 'welcome-bot', text: `Hi ${currentUser.username}! I'm ${botName}. How can I help you?`, sender: 'bot', name: botName, timestamp: new Date(), avatar: botAvatarPlaceholder, botAvatarHint: botAvatarHint }
         ]);
       } else {
         setMessages([
-          { id: 'login-prompt-bot', text: 'Welcome! Please log in or sign up to chat.', sender: 'bot', name: 'Support Bot', timestamp: new Date(), avatar: botAvatarPlaceholder, botAvatarHint: botAvatarHint }
+          { id: 'login-prompt-bot', text: `Welcome! I'm ${botName}. Please log in or sign up to chat.`, sender: 'bot', name: botName, timestamp: new Date(), avatar: botAvatarPlaceholder, botAvatarHint: botAvatarHint }
         ]);
       }
       setInputValue('');
@@ -100,9 +101,9 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     setTimeout(() => {
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: `Thanks, ${currentUser.username}! I've received your message. (Simulated)`,
+        text: `Thanks, ${currentUser.username}! ${botName} has received your message. (Simulated)`,
         sender: 'bot',
-        name: 'Support Bot',
+        name: botName,
         avatar: botAvatarPlaceholder,
         botAvatarHint: botAvatarHint,
         timestamp: new Date(),
@@ -153,9 +154,9 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                       >
                         {msg.text}
                       </div>
-                      <div
+                       <div
                         className={cn(
-                          'text-xs px-1', 
+                          'text-xs px-1 pt-0.5', 
                           isUserMessage ? 'text-primary-foreground/70 text-right' : 'text-muted-foreground text-left'
                         )}
                       >
@@ -221,3 +222,4 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     </div>
   );
 }
+
