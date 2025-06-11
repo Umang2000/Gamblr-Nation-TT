@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from '@/context/AuthContext'; // Import useAuth
+import { useAuth } from '@/context/AuthContext';
 
 interface ChatSidebarProps {
   isOpen: boolean;
@@ -22,19 +22,20 @@ interface Message {
   text: string;
   sender: 'user' | 'bot';
   name: string;
-  avatar?: string;
+  avatar?: string; // For bot avatar
+  userAvatarUrl?: string; // For user avatar
   timestamp: Date;
 }
 
 export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
-  const { currentUser, isLoading: authIsLoading } = useAuth(); // Use AuthContext
+  const { currentUser, isLoading: authIsLoading } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
-    if (isOpen && !authIsLoading) { // Only initialize messages once auth state is known
+    if (isOpen && !authIsLoading) {
       if (currentUser) {
         setMessages([
           { id: 'welcome-bot', text: `Hi ${currentUser.username}! Welcome to the GamblrNation chat.`, sender: 'bot', name: 'Support Bot', timestamp: new Date() }
@@ -44,9 +45,9 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
           { id: 'login-prompt-bot', text: 'Welcome to GamblrNation chat! Please log in or sign up to participate.', sender: 'bot', name: 'Support Bot', timestamp: new Date() }
         ]);
       }
-      setInputValue(''); // Clear input when chat opens
+      setInputValue('');
     }
-  }, [isOpen, currentUser, authIsLoading]); // Add currentUser and authIsLoading as dependencies
+  }, [isOpen, currentUser, authIsLoading]);
   
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -61,7 +62,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
   const handleSendMessage = (e: FormEvent) => {
     e.preventDefault();
 
-    if (authIsLoading) { // Prevent sending if auth state is not yet determined
+    if (authIsLoading) {
         toast({
             title: "Loading...",
             description: "Please wait while we check your login status.",
@@ -86,6 +87,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
       text: inputValue,
       sender: 'user',
       name: currentUser.username, 
+      userAvatarUrl: currentUser.profileImageUrl,
       timestamp: new Date(),
     };
     setMessages((prevMessages) => [...prevMessages, userMessage]);
@@ -140,10 +142,13 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                       <p className="text-sm font-normal">{msg.text}</p>
                     </div>
                   </div>
-                    {msg.sender === 'user' && currentUser && (
+                  {msg.sender === 'user' && currentUser && (
                     <Avatar className="h-8 w-8">
-                        <AvatarFallback className="bg-primary text-primary-foreground">
-                        <UserIconLucide className="h-4 w-4"/>
+                      {msg.userAvatarUrl ? (
+                        <AvatarImage src={msg.userAvatarUrl} alt={currentUser.username} />
+                      ) : null}
+                      <AvatarFallback className="bg-primary text-primary-foreground">
+                        {currentUser.username ? currentUser.username.charAt(0).toUpperCase() : <UserIconLucide className="h-4 w-4" />}
                       </AvatarFallback>
                     </Avatar>
                   )}
@@ -169,7 +174,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
               size="icon" 
               className="bg-primary hover:bg-primary/90 text-primary-foreground shrink-0" 
               aria-label="Send message"
-              disabled={authIsLoading || (inputValue.trim() === '' && currentUser !== null)}
+              disabled={authIsLoading || (inputValue.trim() === '' && currentUser !== null) || !currentUser}
             >
               <Send className="h-5 w-5" />
             </Button>
