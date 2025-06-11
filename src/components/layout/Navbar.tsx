@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Gamepad2, UserCircle, LogIn, Gem, DollarSign, Home, Trophy, ShoppingCart, PlayCircle, Gift } from 'lucide-react'; 
+import { Menu, X, Gamepad2, UserCircle, LogIn, Gem, DollarSign, Trophy, ShoppingCart, PlayCircle, Gift } from 'lucide-react'; 
 import { useState } from 'react';
 import Logo from '@/components/icons/Logo';
 import { Button } from '@/components/ui/button';
@@ -14,7 +14,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useJackpot } from '@/context/JackpotContext'; 
 
 const navItems = [
-  { name: 'Home', href: '/', icon: Home },
   { name: 'Games', href: '/games', icon: Gamepad2 },
   { name: 'Leaderboard', href: '/leaderboard', icon: Trophy },
   { name: 'Marketplace', href: '/marketplace', icon: ShoppingCart },
