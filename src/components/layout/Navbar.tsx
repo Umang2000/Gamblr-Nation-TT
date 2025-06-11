@@ -74,9 +74,18 @@ function LiveJackpotDisplay() {
             "h-4 w-4 transition-colors", 
             isActive ? "text-primary" : "text-accent",
             !isActive && "group-hover:text-accent-foreground" 
-            )} />
+            )}
+        />
+        
         <span className="hidden lg:inline text-foreground/80">Jackpot:</span>
-        <span className={cn("font-semibold", isActive ? "text-primary" : "text-accent")}>{jackpotAmount.toLocaleString()}</span>
+
+        <span className={cn(
+          "font-semibold", 
+          isActive ? "text-primary" : "text-accent", 
+          !isActive && "group-hover:text-accent-foreground" 
+          )}>
+            {jackpotAmount.toLocaleString()}
+        </span>
       </Button>
     </Link>
   );
