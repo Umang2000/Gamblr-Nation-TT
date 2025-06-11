@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Gamepad2, UserCircle, LogIn } from 'lucide-react'; // UserCircle as placeholder
+import { Menu, X, Gamepad2, UserCircle, LogIn } from 'lucide-react';
 import { useState } from 'react';
 import Logo from '@/components/icons/Logo';
 import { Button } from '@/components/ui/button';
@@ -22,7 +22,6 @@ const navItems = [
   { name: 'Jackpot', href: '/progressive-jackpot', icon: Gamepad2 },
 ];
 
-// Auth Nav Item is now dynamic based on login state
 
 const NavLink = ({ href, children, onClick, icon: Icon, isActiveOverride }: { href: string; children: React.ReactNode; onClick?: () => void; icon?: React.ElementType; isActiveOverride?: boolean }) => {
   const pathname = usePathname();
@@ -35,7 +34,7 @@ const NavLink = ({ href, children, onClick, icon: Icon, isActiveOverride }: { hr
         onClick={onClick}
         className={cn(
           "text-sm font-medium transition-colors hover:text-primary",
-          isActive ? "text-primary font-bold text-glow-primary" : "text-foreground/80",
+          isActive ? "text-primary font-bold" : "text-foreground/80", // Removed text-glow
           "flex items-center gap-2 justify-start md:justify-center px-2 py-1 md:px-3 md:py-2"
         )}
         aria-current={isActive ? "page" : undefined}
@@ -60,7 +59,6 @@ export default function Navbar() {
           <Logo className="h-10 w-auto" />
         </Link>
 
-        {/* Desktop Navigation & Auth */}
         <div className="hidden md:flex items-center">
           <nav className="flex flex-wrap items-center gap-x-1 lg:gap-x-2 gap-y-1">
             {navItems.map((item) => (
@@ -71,12 +69,14 @@ export default function Navbar() {
           </nav>
           <div className="ml-2 md:ml-4 flex items-center">
             {isLoading ? (
-              <div className="h-8 w-20 bg-muted rounded animate-pulse"></div> // Skeleton loader
+              <div className="h-9 w-9 bg-muted rounded-full animate-pulse"></div> 
             ) : currentUser ? (
               <Link href="/profile" passHref>
                 <Button variant="ghost" className={cn("p-0 hover:bg-transparent", pathname === '/profile' ? 'ring-2 ring-primary rounded-full' : '')}>
                   <Avatar className={cn("h-9 w-9 border-2", pathname === '/profile' ? 'border-primary' : 'border-transparent hover:border-primary/50')}>
-                    {/* <AvatarImage src="user-profile-pic.jpg" alt={currentUser.username} /> */}
+                    {currentUser.profileImageUrl ? (
+                      <AvatarImage src={currentUser.profileImageUrl} alt={currentUser.username} />
+                    ) : null}
                     <AvatarFallback className="bg-primary/20 text-primary font-semibold">
                       {currentUser.username ? currentUser.username.charAt(0).toUpperCase() : <UserCircle className="h-5 w-5"/>}
                     </AvatarFallback>
@@ -85,15 +85,13 @@ export default function Navbar() {
                 </Button>
               </Link>
             ) : (
-              <NavLink href="/login" icon={LogIn} isActiveOverride={pathname === '/login' || pathname === '/signup'}>
+              <NavLink href="/login" icon={LogIn} isActiveOverride={pathname === '/login'}>
                 Login
               </NavLink>
             )}
           </div>
         </div>
 
-
-        {/* Mobile Navigation */}
         <div className="md:hidden">
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
@@ -125,8 +123,8 @@ export default function Navbar() {
                   {isLoading ? (
                      <div className="h-8 w-full bg-muted rounded animate-pulse px-2 py-1"></div>
                   ) : currentUser ? (
-                     <NavLink href="/profile" onClick={() => setMobileMenuOpen(false)} icon={UserCircle}> {/* Consider better icon for profile */}
-                        Profile
+                     <NavLink href="/profile" onClick={() => setMobileMenuOpen(false)} icon={UserCircle}>
+                        Profile ({currentUser.username.substring(0,10) + (currentUser.username.length > 10 ? '...' : '')})
                       </NavLink>
                   ) : (
                      <NavLink href="/login" onClick={() => setMobileMenuOpen(false)} icon={LogIn}>

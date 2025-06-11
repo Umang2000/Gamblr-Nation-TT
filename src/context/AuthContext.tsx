@@ -10,6 +10,7 @@ interface AuthContextType {
   isLoading: boolean;
   login: (userData: User) => void;
   logout: () => void;
+  updateProfilePicture: (userId: string, imageUrl: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -32,10 +33,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(false);
   }, []);
 
-  const login = useCallback((userData: User) => {
+  const login = useCallback((userData: User) => { // userData here should already include profileImageUrl if it exists
     localStorage.setItem('currentUser', JSON.stringify(userData));
     setCurrentUser(userData);
-    router.push('/'); // Or /profile
+    router.push('/'); 
   }, [router]);
 
   const logout = useCallback(() => {
@@ -44,8 +45,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     router.push('/login');
   }, [router]);
 
+  const updateProfilePicture = useCallback((userId: string, imageUrl: string) => {
+    // Update in the 'users' array in localStorage
+    try {
+      const storedUsers = localStorage.getItem('users');
+      let users: User[] = storedUsers ? JSON.parse(storedUsers) : [];
+      users = users.map(u => u.id === userId ? { ...u, profileImageUrl: imageUrl } : u);
+      localStorage.setItem('users', JSON.stringify(users));
+
+      // If the updated user is the current user, update currentUser state and its localStorage item
+      if (currentUser && currentUser.id === userId) {
+        const updatedCurrentUser = { ...currentUser, profileImageUrl: imageUrl };
+        setCurrentUser(updatedCurrentUser);
+        localStorage.setItem('currentUser', JSON.stringify(updatedCurrentUser));
+      }
+    } catch (error) {
+      console.error("Failed to update profile picture in localStorage", error);
+    }
+  }, [currentUser]);
+
   return (
-    <AuthContext.Provider value={{ currentUser, isLoading, login, logout }}>
+    <AuthContext.Provider value={{ currentUser, isLoading, login, logout, updateProfilePicture }}>
       {children}
     </AuthContext.Provider>
   );
