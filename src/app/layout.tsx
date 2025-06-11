@@ -10,7 +10,7 @@ import { JackpotProvider } from '@/context/JackpotContext';
 import Footer from '@/components/layout/Footer'; // Import Footer
 
 export const metadata: Metadata = {
-  title: 'GamblrNation Hub',
+  title: 'Gamblr Nation',
   description: 'Your ultimate gaming community destination.',
 };
 

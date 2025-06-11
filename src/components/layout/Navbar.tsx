@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Gamepad2, UserCircle, LogIn, Gem, DollarSign } from 'lucide-react'; 
+import { Menu, X, Gamepad2, UserCircle, LogIn, Gem, DollarSign, Home, Trophy, ShoppingCart, PlayCircle, Gift } from 'lucide-react'; 
 import { useState } from 'react';
 import Logo from '@/components/icons/Logo';
 import { Button } from '@/components/ui/button';
@@ -14,12 +14,12 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useJackpot } from '@/context/JackpotContext'; 
 
 const navItems = [
-  { name: 'Home', href: '/', icon: Gamepad2 },
+  { name: 'Home', href: '/', icon: Home },
   { name: 'Games', href: '/games', icon: Gamepad2 },
-  { name: 'Leaderboard', href: '/leaderboard', icon: Gamepad2 },
-  { name: 'Marketplace', href: '/marketplace', icon: Gamepad2 },
-  { name: 'Live Stream', href: '/live-stream', icon: Gamepad2 },
-  { name: 'Daily Case', href: '/daily-case', icon: Gamepad2 },
+  { name: 'Leaderboard', href: '/leaderboard', icon: Trophy },
+  { name: 'Marketplace', href: '/marketplace', icon: ShoppingCart },
+  { name: 'Live Stream', href: '/live-stream', icon: PlayCircle },
+  { name: 'Daily Case', href: '/daily-case', icon: Gift },
 ];
 
 const mobileNavItems = [
