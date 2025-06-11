@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect, useRef, FormEvent } from 'react';
-import { Send, User, X } from 'lucide-react'; // Added X icon
+import { Send, User, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -96,7 +96,6 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
       <div className="flex flex-col h-full">
         <header className="flex items-center justify-between p-4 border-b border-border">
           <h2 id="chat-sidebar-title" className="text-lg font-semibold font-headline text-primary">Community Chat</h2>
-          {/* Removed explicit close button from header */}
         </header>
 
         {!isNameSet ? (
@@ -111,9 +110,6 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
               className="bg-input text-foreground placeholder:text-muted-foreground"
             />
             <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">Set Name</Button>
-             <Button variant="ghost" size="icon" onClick={onClose} className="mt-auto text-muted-foreground hover:text-primary" aria-label="Close chat">
-                <X className="h-6 w-6" />
-              </Button>
           </form>
         ) : (
           <>
@@ -154,9 +150,6 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
 
             <div className="p-4 border-t border-border">
               <form onSubmit={handleSendMessage} className="flex items-center space-x-2">
-                 <Button variant="ghost" size="icon" onClick={onClose} className="text-muted-foreground hover:text-primary" aria-label="Close chat">
-                    <X className="h-5 w-5" />
-                 </Button>
                 <Input
                   type="text"
                   value={inputValue}
@@ -165,6 +158,9 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                   className="flex-grow bg-input text-foreground placeholder:text-muted-foreground"
                   aria-label="Chat message input"
                 />
+                 <Button variant="ghost" size="icon" onClick={onClose} className="text-muted-foreground hover:text-primary" aria-label="Close chat">
+                    <X className="h-5 w-5" />
+                 </Button>
                 <Button type="submit" size="icon" className="bg-accent hover:bg-accent/90 text-accent-foreground" aria-label="Send message">
                   <Send className="h-5 w-5" />
                 </Button>
