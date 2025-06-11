@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -7,25 +8,32 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Filter, Star, Zap, Swords, Puzzle, Users } from 'lucide-react';
+import { Search, Filter, Star, Zap, Users, Dices, CircleDot, CoinsIcon as CoinflipIcon, Landmark, Spade } from 'lucide-react'; // Added new icons
 
-// Mock data for games
+// New game data
 const allGames = [
-  { id: '1', title: 'Cosmic Conquest', genre: 'Strategy', rating: 4.5, players: 1500, image: 'https://placehold.co/600x400/A050C3/201028?text=Cosmic+Conquest', imageHint: "space strategy game", description: "Conquer galaxies in this epic multiplayer strategy game." },
-  { id: '2', title: 'Neon Racer', genre: 'Racing', rating: 4.2, players: 800, image: 'https://placehold.co/600x400/E91E63/201028?text=Neon+Racer', imageHint: "futuristic car race", description: "Speed through futuristic cities in high-octane races." },
-  { id: '3', title: 'Mystic Realms', genre: 'RPG', rating: 4.8, players: 2200, image: 'https://placehold.co/600x400/4CAF50/201028?text=Mystic+Realms', imageHint: "fantasy world adventure", description: "Embark on a magical journey in a vast open-world RPG." },
-  { id: '4', title: 'Block Breaker Blitz', genre: 'Puzzle', rating: 4.0, players: 500, image: 'https://placehold.co/600x400/FFC107/201028?text=Block+Breaker', imageHint: "colorful blocks puzzle", description: "Test your wits in this fast-paced block-breaking puzzle game." },
-  { id: '5', title: 'Arena Champions', genre: 'Action', rating: 4.6, players: 1800, image: 'https://placehold.co/600x400/F44336/201028?text=Arena+Champions', imageHint: "gladiator combat arena", description: "Battle for glory in intense arena combat." },
-  { id: '6', title: 'Galactic Traders', genre: 'Simulation', rating: 4.3, players: 950, image: 'https://placehold.co/600x400/03A9F4/201028?text=Galactic+Traders', imageHint: "space trading simulation", description: "Build your trading empire across the stars." },
+  { id: 'roulette', title: 'Roulette', genre: 'Casino', rating: 4.3, players: 0, image: 'https://placehold.co/600x400/E53935/FFFFFF?text=Roulette', imageHint: "roulette wheel casino", description: "Spin the wheel and try your luck!" },
+  { id: 'coinflip', title: 'Coinflip', genre: 'Casino', rating: 4.0, players: 0, image: 'https://placehold.co/600x400/FFB300/FFFFFF?text=Coinflip', imageHint: "flipping coin heads", description: "Heads or Tails? Make your choice." },
+  { id: 'dice-roll', title: 'Dice Roll', genre: 'Casino', rating: 4.1, players: 0, image: 'https://placehold.co/600x400/43A047/FFFFFF?text=Dice', imageHint: "rolling dice game", description: "Roll the dice and see what you get." },
+  { id: 'slots', title: 'Slots', genre: 'Casino', rating: 4.2, players: 0, image: 'https://placehold.co/600x400/1E88E5/FFFFFF?text=Slots', imageHint: "slot machine jackpot", description: "Spin the reels for a chance to win big!" },
+  { id: 'blackjack', title: 'Blackjack', genre: 'Casino', rating: 4.5, players: 0, image: 'https://placehold.co/600x400/8E24AA/FFFFFF?text=Blackjack', imageHint: "blackjack cards table", description: "Try to beat the dealer and get 21." },
 ];
 
-const genres = ['All', 'Strategy', 'Racing', 'RPG', 'Puzzle', 'Action', 'Simulation'];
+const genres = ['All', 'Casino']; // Updated genres
 const sortOptions = [
   { value: 'title_asc', label: 'Title (A-Z)' },
   { value: 'title_desc', label: 'Title (Z-A)' },
   { value: 'rating_desc', label: 'Rating (High-Low)' },
-  { value: 'players_desc', label: 'Players (Most)' },
 ];
+
+const gameIcons: { [key: string]: React.ElementType } = {
+  Roulette: CircleDot,
+  Coinflip: CoinflipIcon,
+  'Dice Roll': Dices,
+  Slots: Landmark,
+  Blackjack: Spade,
+};
+
 
 export default function GamesPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -43,8 +51,6 @@ export default function GamesPage() {
           return b.title.localeCompare(a.title);
         case 'rating_desc':
           return b.rating - a.rating;
-        case 'players_desc':
-          return b.players - a.players;
         default:
           return 0;
       }
@@ -97,32 +103,37 @@ export default function GamesPage() {
 
       {filteredGames.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredGames.map(game => (
-            <Card key={game.id} className="overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/30 glass-card">
+          {filteredGames.map(game => {
+            const GameIcon = gameIcons[game.title] || Zap;
+            return (
+            <Card key={game.id} className="overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/30 glass-card flex flex-col">
               <CardHeader className="p-0">
                 <div className="relative h-48 w-full">
                   <Image src={game.image} alt={game.title} layout="fill" objectFit="cover" data-ai-hint={game.imageHint} />
                 </div>
               </CardHeader>
-              <CardContent className="p-4">
-                <CardTitle className="text-2xl text-primary mb-2">{game.title}</CardTitle>
+              <CardContent className="p-4 flex-grow">
+                <CardTitle className="text-2xl text-primary mb-2 flex items-center">
+                  <GameIcon className="mr-2 h-6 w-6 text-accent" />
+                  {game.title}
+                </CardTitle>
                 <CardDescription className="text-sm text-muted-foreground mb-1">Genre: {game.genre}</CardDescription>
                 <div className="flex items-center space-x-4 text-sm text-foreground/80 mb-3">
                   <span className="flex items-center"><Star className="h-4 w-4 mr-1 text-yellow-400" /> {game.rating}/5.0</span>
-                  <span className="flex items-center"><Users className="h-4 w-4 mr-1 text-primary" /> {game.players.toLocaleString()} Players</span>
+                  {/* <span className="flex items-center"><Users className="h-4 w-4 mr-1 text-primary" /> {game.players.toLocaleString()} Players</span> */}
                 </div>
-                <p className="text-foreground/80 text-sm mb-4 h-16 overflow-hidden text-ellipsis">{game.description}</p>
+                <p className="text-foreground/80 text-sm mb-4 h-12 overflow-hidden text-ellipsis">{game.description}</p>
               </CardContent>
-              <CardFooter className="p-4 pt-0">
+              <CardFooter className="p-4 pt-0 mt-auto">
                  <Button asChild className="w-full bg-accent hover:bg-accent/90 text-accent-foreground element-glow-accent">
-                  {/* In a real app, this would link to the game or a game detail page */}
                   <Link href={`/games/${game.id}`}> 
-                    <Zap className="mr-2 h-4 w-4" /> Play Now
+                    <Zap className="mr-2 h-4 w-4" /> View Game
                   </Link>
                 </Button>
               </CardFooter>
             </Card>
-          ))}
+          );
+        })}
         </div>
       ) : (
         <Card className="text-center py-12 glass-card">
@@ -135,19 +146,6 @@ export default function GamesPage() {
           </CardContent>
         </Card>
       )}
-    </div>
-  );
-}
-
-// Dummy page for individual game link, can be expanded later
-export function GameDetailPage({ params }: { params: { gameId: string } }) {
-  return (
-    <div>
-      <h1 className="text-3xl font-bold">Game Details for Game ID: {params.gameId}</h1>
-      <p>Details about the game will be shown here.</p>
-      <Button asChild className="mt-4">
-        <Link href="/games">Back to Games</Link>
-      </Button>
     </div>
   );
 }

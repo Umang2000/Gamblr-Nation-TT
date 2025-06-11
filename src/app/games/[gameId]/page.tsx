@@ -1,18 +1,73 @@
+
 'use client';
 
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { ArrowLeft, Star, Users, Zap } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { ArrowLeft, Star, Zap, Dices, CircleDot, CoinsIcon as CoinflipIcon, Landmark, Spade } from 'lucide-react';
 
 // Mock game data - in a real app, fetch this based on gameId
+const gameDetailsData: { [key: string]: any } = {
+  roulette: { 
+    id: 'roulette', 
+    title: 'Roulette', 
+    genre: 'Casino', 
+    rating: 4.3, 
+    image: 'https://placehold.co/800x450/E53935/FFFFFF?text=Roulette', 
+    imageHint: "roulette wheel casino",
+    description: "Spin the wheel and try your luck!", 
+    longDescription: "Experience the thrill of the classic casino game, Roulette. Place your bets on your lucky numbers, colors, or sections of the wheel. Watch as the ball spins and hope it lands in your favor. This is a simplified mock version focusing on the spin and random outcome.",
+    icon: CircleDot,
+  },
+  coinflip: { 
+    id: 'coinflip', 
+    title: 'Coinflip', 
+    genre: 'Casino', 
+    rating: 4.0, 
+    image: 'https://placehold.co/800x450/FFB300/FFFFFF?text=Coinflip', 
+    imageHint: "flipping coin heads",
+    description: "Heads or Tails? Make your choice.", 
+    longDescription: "The simplest game of chance! Call heads or tails and see if fate is on your side. This mock-up simulates a coin flip with a random outcome.",
+    icon: CoinflipIcon,
+  },
+  'dice-roll': { 
+    id: 'dice-roll', 
+    title: 'Dice Roll', 
+    genre: 'Casino', 
+    rating: 4.1, 
+    image: 'https://placehold.co/800x450/43A047/FFFFFF?text=Dice', 
+    imageHint: "rolling dice game",
+    description: "Roll the dice and see what you get.", 
+    longDescription: "Roll one or more dice and see the outcome. A fundamental game of chance, perfect for quick fun. This version simulates rolling two standard six-sided dice.",
+    icon: Dices,
+  },
+  slots: { 
+    id: 'slots', 
+    title: 'Slots', 
+    genre: 'Casino', 
+    rating: 4.2, 
+    image: 'https://placehold.co/800x450/1E88E5/FFFFFF?text=Slots', 
+    imageHint: "slot machine jackpot",
+    description: "Spin the reels for a chance to win big!", 
+    longDescription: "Try your luck with our classic slot machine mock-up. Spin the reels and match the symbols to get a (simulated) win. Features three reels with common slot symbols.",
+    icon: Landmark,
+  },
+  blackjack: { 
+    id: 'blackjack', 
+    title: 'Blackjack', 
+    genre: 'Casino', 
+    rating: 4.5, 
+    image: 'https://placehold.co/800x450/8E24AA/FFFFFF?text=Blackjack', 
+    imageHint: "blackjack cards table",
+    description: "Try to beat the dealer and get 21.", 
+    longDescription: "The classic card game of 21. Try to get closer to 21 than the dealer without going over. This is a very simplified mock-up allowing you to 'Hit' or 'Stand'.",
+    icon: Spade,
+  },
+};
+
 const getGameDetails = (gameId: string) => {
-  const games = [
-    { id: '1', title: 'Cosmic Conquest', genre: 'Strategy', rating: 4.5, players: 1500, image: 'https://placehold.co/800x450/A050C3/201028?text=Cosmic+Conquest', imageHint: "space strategy game", description: "Conquer galaxies in this epic multiplayer strategy game. Build your fleet, manage resources, and engage in tactical battles against players from around the universe. Form alliances, research powerful technologies, and dominate the cosmos!", longDescription: "Cosmic Conquest offers a deep and engaging strategic experience. Players start with a single planet and must expand their empire by colonizing new worlds, developing infrastructure, and building a formidable military. The game features a complex economic system, diverse unit types, and a dynamic galaxy map that evolves with player actions. Regular events and updates keep the gameplay fresh and exciting." },
-    { id: '2', title: 'Neon Racer', genre: 'Racing', rating: 4.2, players: 800, image: 'https://placehold.co/800x450/E91E63/201028?text=Neon+Racer', imageHint: "futuristic car race", description: "Speed through futuristic cities in high-octane races.", longDescription: "Neon Racer throws you into the driver's seat of high-speed, anti-gravity vehicles. Race through stunning, neon-lit cityscapes, master challenging tracks, and customize your ride with a wide array of upgrades and cosmetic items. Compete in single-player championships or test your skills against others in thrilling online multiplayer modes." },
-  ];
-  return games.find(game => game.id === gameId) || games[0]; // Fallback to first game if not found
+  return gameDetailsData[gameId] || null;
 };
 
 
@@ -33,6 +88,8 @@ export default function GameDetailPage({ params }: { params: { gameId: string } 
     );
   }
   
+  const GameIcon = game.icon || Zap;
+
   return (
     <div className="space-y-8">
        <Button variant="outline" asChild className="mb-2 border-primary text-primary hover:bg-primary/10 hover:text-primary">
@@ -46,49 +103,27 @@ export default function GameDetailPage({ params }: { params: { gameId: string } 
           <Image src={game.image} alt={game.title} layout="fill" objectFit="cover" priority data-ai-hint={game.imageHint}/>
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
           <div className="absolute bottom-0 left-0 p-6">
-            <CardTitle className="text-4xl md:text-5xl font-bold text-white text-glow-primary">{game.title}</CardTitle>
+            <CardTitle className="text-4xl md:text-5xl font-bold text-white text-glow-primary flex items-center">
+              <GameIcon className="mr-3 h-10 w-10 text-accent" />
+              {game.title}
+            </CardTitle>
             <CardDescription className="text-lg text-primary-foreground/80">{game.genre}</CardDescription>
           </div>
         </CardHeader>
         <CardContent className="p-6">
           <div className="flex flex-wrap items-center gap-4 text-md text-foreground/90 mb-6">
             <span className="flex items-center p-2 bg-primary/10 rounded-md"><Star className="h-5 w-5 mr-2 text-yellow-400" /> Rating: {game.rating}/5.0</span>
-            <span className="flex items-center p-2 bg-primary/10 rounded-md"><Users className="h-5 w-5 mr-2 text-primary" /> Players: {game.players.toLocaleString()}</span>
           </div>
           
           <h2 className="text-2xl font-semibold text-primary mb-3">About {game.title}</h2>
           <p className="text-foreground/80 leading-relaxed mb-6">{game.longDescription || game.description}</p>
-
-          <div className="grid md:grid-cols-2 gap-6 mb-6">
-            <Card className="bg-card/50">
-              <CardHeader><CardTitle className="text-xl text-accent">Key Features</CardTitle></CardHeader>
-              <CardContent>
-                <ul className="list-disc list-inside space-y-1 text-foreground/80">
-                  <li>Feature 1 specific to {game.title}</li>
-                  <li>Feature 2: Exciting gameplay mechanic</li>
-                  <li>Feature 3: Stunning visuals</li>
-                  <li>Feature 4: Multiplayer support</li>
-                </ul>
-              </CardContent>
-            </Card>
-            <Card className="bg-card/50">
-              <CardHeader><CardTitle className="text-xl text-accent">System Requirements (Mock)</CardTitle></CardHeader>
-              <CardContent>
-                <ul className="space-y-1 text-foreground/80">
-                  <li><strong>OS:</strong> Windows 10 / macOS X</li>
-                  <li><strong>Processor:</strong> Intel Core i5 or AMD equivalent</li>
-                  <li><strong>Memory:</strong> 8 GB RAM</li>
-                  <li><strong>Graphics:</strong> NVIDIA GeForce GTX 970 / AMD Radeon R9 290</li>
-                  <li><strong>Storage:</strong> 20 GB available space</li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
           
-          <Button size="lg" className="w-full md:w-auto bg-accent hover:bg-accent/90 text-accent-foreground element-glow-accent text-lg py-3 px-8">
-            <Zap className="mr-2 h-5 w-5" /> Play {game.title}
+          <Button asChild size="lg" className="w-full md:w-auto bg-accent hover:bg-accent/90 text-accent-foreground element-glow-accent text-lg py-3 px-8">
+            <Link href={`/games/play/${game.id}`}>
+              <Zap className="mr-2 h-5 w-5" /> Play {game.title} (Mock-up)
+            </Link>
           </Button>
-          <p className="text-xs text-muted-foreground mt-2 text-center md:text-left">(Mock play button - links to external game page or starts demo)</p>
+          <p className="text-xs text-muted-foreground mt-2 text-center md:text-left">(This will take you to a simple interactive mock-up of the game)</p>
         </CardContent>
       </Card>
     </div>
