@@ -7,13 +7,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"; // Import Popover
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from '@/context/AuthContext';
 import ChatRulesDialog from './ChatRulesDialog';
-import EmojiPicker from './EmojiPicker'; // Import EmojiPicker
+import EmojiPicker from './EmojiPicker';
 
 interface ChatSidebarProps {
   isOpen: boolean;
@@ -32,7 +32,10 @@ interface Message {
 }
 
 const MAX_CHAT_LENGTH = 160;
-const MOCK_LIVE_USERS = 2; 
+const MOCK_LIVE_USERS = 2;
+const SLOW_MODE_DELAY_MS = 5000; // 5 seconds
+const SANITIZE_REGEX = /[^a-zA-Z0-9\s!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/g;
+
 
 export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
   const { currentUser, isLoading: authIsLoading } = useAuth();
@@ -42,6 +45,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
   const { toast } = useToast();
   const [isRulesOpen, setIsRulesOpen] = useState(false);
   const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
+  const [lastMessageTime, setLastMessageTime] = useState<number>(0);
 
   const botName = "Gamblr Nation Bot";
   const botAvatarPlaceholder = "https://placehold.co/40x40/A050C3/FFFFFF.png";
@@ -59,6 +63,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
         ]);
       }
       setInputValue('');
+      setLastMessageTime(0); // Reset slow mode timer when chat opens/user changes
     }
   }, [isOpen, currentUser, authIsLoading]);
 
@@ -72,12 +77,16 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
   }, [messages]);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+    let value = e.target.value;
+    
+    // Sanitize input to allow only specified characters
+    value = value.replace(SANITIZE_REGEX, '');
+
     if (value.length <= MAX_CHAT_LENGTH) {
       setInputValue(value);
     } else {
       setInputValue(value.substring(0, MAX_CHAT_LENGTH));
-      toast({ title: "Character limit reached", description: `Maximum ${MAX_CHAT_LENGTH} characters allowed.`, variant: "destructive" });
+      // Toast for max length is shown when trying to send or add emoji if it exceeds
     }
   };
 
@@ -87,7 +96,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     } else {
       toast({ title: "Character limit reached", description: "Cannot add emoji, maximum length exceeded.", variant: "destructive" });
     }
-    // Popover will close itself if `onClose` is called by EmojiPicker
+    setIsEmojiPickerOpen(false);
   };
 
   const handleSendMessage = (e: FormEvent) => {
@@ -111,11 +120,29 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
       return;
     }
 
-    if (inputValue.trim() === '') return;
+    const now = Date.now();
+    if (now - lastMessageTime < SLOW_MODE_DELAY_MS) {
+      const timeLeft = Math.ceil((SLOW_MODE_DELAY_MS - (now - lastMessageTime)) / 1000);
+      toast({
+        title: "Slow Mode Active",
+        description: `Please wait ${timeLeft} second${timeLeft > 1 ? 's' : ''} before sending another message.`,
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    const trimmedMessage = inputValue.trim();
+    if (trimmedMessage === '') return;
+
+    if (trimmedMessage.length > MAX_CHAT_LENGTH) {
+        toast({ title: "Character limit reached", description: `Maximum ${MAX_CHAT_LENGTH} characters allowed. Your message is too long.`, variant: "destructive" });
+        return;
+    }
+
 
     const userMessage: Message = {
       id: Date.now().toString(),
-      text: inputValue,
+      text: trimmedMessage,
       sender: 'user',
       name: currentUser.username,
       userAvatarUrl: currentUser.profileImageUrl,
@@ -123,6 +150,8 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     };
     setMessages((prevMessages) => [...prevMessages, userMessage]);
     setInputValue('');
+    setLastMessageTime(Date.now());
+
 
     setTimeout(() => {
       const botResponse: Message = {
@@ -234,7 +263,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                 className="flex-grow bg-input text-foreground placeholder:text-muted-foreground pr-10 rounded-md" 
                 aria-label="Chat message input"
                 disabled={authIsLoading || !currentUser}
-                maxLength={MAX_CHAT_LENGTH}
+                maxLength={MAX_CHAT_LENGTH} // HTML5 attribute for visual feedback, JS handles the actual limit
               />
               <Popover open={isEmojiPickerOpen} onOpenChange={setIsEmojiPickerOpen}>
                 <PopoverTrigger asChild>
@@ -282,7 +311,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
             </Button>
             <div className="flex items-center gap-1">
               <MessageSquareText className="h-3.5 w-3.5" />
-              <span>{characterCount}</span>
+              <span>{characterCount < 0 ? 0 : characterCount}</span>
             </div>
           </div>
           {!authIsLoading && !currentUser && isOpen && (
@@ -296,3 +325,4 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     </div>
   );
 }
+
