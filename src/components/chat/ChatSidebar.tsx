@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect, useRef, FormEvent } from 'react';
-import { Send, User, X } from 'lucide-react';
+import { Send, User, X, ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -32,8 +32,9 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
 
   useEffect(() => {
     if (isOpen && messages.length === 0 && !isNameSet) {
+      // Add initial bot message only if chat is open, no messages, and name not set
       setMessages([
-        { id: '1', text: 'Welcome to GamblrNation chat! Set your name to begin.', sender: 'bot', name: 'Support Bot', timestamp: new Date() }
+        { id: 'init-bot', text: 'Welcome to GamblrNation chat! Please set your name to begin.', sender: 'bot', name: 'Support Bot', timestamp: new Date() }
       ]);
     }
   }, [isOpen, messages.length, isNameSet]);
@@ -51,8 +52,8 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     e.preventDefault();
     if (userName.trim()) {
       setIsNameSet(true);
-      setMessages(prev => [
-        { id: '1', text: 'Welcome to GamblrNation chat! Feel free to ask anything.', sender: 'bot', name: 'Support Bot', timestamp: new Date() },
+      setMessages([ // Reset messages when name is set
+        { id: 'welcome-bot', text: 'Welcome to GamblrNation chat! Feel free to ask anything.', sender: 'bot', name: 'Support Bot', timestamp: new Date() },
         { id: Date.now().toString(), text: `Name set to ${userName}. You can start chatting now!`, sender: 'bot', name: 'System', timestamp: new Date() }
       ]);
     }
@@ -72,10 +73,11 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     setMessages((prevMessages) => [...prevMessages, userMessage]);
     setInputValue('');
 
+    // Simulate bot response
     setTimeout(() => {
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: `Thanks for your message, ${userName}! This is a simulated response.`,
+        text: `Thanks for your message, ${userName}! This is a simulated response from our advanced AI. How can I help you further?`,
         sender: 'bot',
         name: 'Support Bot',
         timestamp: new Date(),
@@ -96,10 +98,11 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
       <div className="flex flex-col h-full">
         <header className="flex items-center justify-between p-4 border-b border-border">
           <h2 id="chat-sidebar-title" className="text-lg font-semibold font-headline text-primary">Community Chat</h2>
+          {/* The close button is now at the bottom */}
         </header>
 
         {!isNameSet ? (
-          <form onSubmit={handleNameSubmit} className="p-4 space-y-3">
+          <form onSubmit={handleNameSubmit} className="p-4 space-y-3 mt-auto mb-auto">
             <label htmlFor="userName" className="block text-sm font-medium text-foreground">Enter your name:</label>
             <Input
               id="userName"
@@ -157,11 +160,23 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                   placeholder="Type a message..."
                   className="flex-grow bg-input text-foreground placeholder:text-muted-foreground"
                   aria-label="Chat message input"
+                  disabled={!isNameSet}
                 />
-                 <Button variant="ghost" size="icon" onClick={onClose} className="text-muted-foreground hover:text-primary" aria-label="Close chat">
-                    <X className="h-5 w-5" />
-                 </Button>
-                <Button type="submit" size="icon" className="bg-accent hover:bg-accent/90 text-accent-foreground" aria-label="Send message">
+                <Button
+                  size="icon"
+                  onClick={onClose}
+                  className="bg-[#E91E63] hover:bg-[#d81b60] text-white rounded-md p-2 flex items-center justify-center shrink-0"
+                  aria-label="Close chat"
+                >
+                  <X className="h-5 w-5" strokeWidth={2.5} />
+                </Button>
+                <Button 
+                  type="submit" 
+                  size="icon" 
+                  className="bg-accent hover:bg-accent/90 text-accent-foreground shrink-0" 
+                  aria-label="Send message" 
+                  disabled={!isNameSet || inputValue.trim() === ''}
+                >
                   <Send className="h-5 w-5" />
                 </Button>
               </form>
