@@ -136,10 +136,12 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                   <div className={`flex flex-col gap-1 ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
                     <div className={`flex items-center space-x-2 rtl:space-x-reverse ${msg.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
                         <span className="text-xs font-semibold text-foreground">{msg.name}</span>
-                        <span className="text-xs font-normal text-muted-foreground">{msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                     </div>
                     <div className={`p-3 rounded-lg ${msg.sender === 'user' ? 'bg-primary text-primary-foreground rounded-br-none' : 'bg-secondary text-secondary-foreground rounded-bl-none'}`}>
                       <p className="text-sm font-normal">{msg.text}</p>
+                      <div className={`text-xs text-right mt-1 ${msg.sender === 'user' ? 'text-primary-foreground/75' : 'text-secondary-foreground/75'}`}>
+                        {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </div>
                     </div>
                   </div>
                   {msg.sender === 'user' && currentUser && (
