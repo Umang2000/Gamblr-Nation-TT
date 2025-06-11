@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from '@/context/AuthContext';
-import ChatRulesDialog from './ChatRulesDialog'; // Import the new dialog
+import ChatRulesDialog from './ChatRulesDialog';
 
 interface ChatSidebarProps {
   isOpen: boolean;
@@ -30,7 +30,7 @@ interface Message {
 }
 
 const MAX_CHAT_LENGTH = 160;
-const MOCK_LIVE_USERS = 2; // Updated user count
+const MOCK_LIVE_USERS = 2; 
 
 export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
   const { currentUser, isLoading: authIsLoading } = useAuth();
@@ -151,9 +151,8 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
           <Button
             type="button"
             size="icon"
-            variant="ghost"
             onClick={onClose}
-            className="text-accent hover:text-accent/80 h-7 w-7" // Updated close button color
+            className="bg-accent text-accent-foreground hover:bg-accent/90 h-7 w-7"
             aria-label="Close chat"
           >
             <ChevronLeft className="h-5 w-5" strokeWidth={2.5} />
@@ -269,4 +268,3 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     </div>
   );
 }
-
