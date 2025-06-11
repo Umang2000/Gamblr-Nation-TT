@@ -40,7 +40,7 @@ const NavLink = ({ href, children, onClick, icon: Icon, isActiveOverride }: { hr
         className={cn(
           "text-sm font-medium transition-colors group", 
           isActive ? "text-primary font-bold" : "text-foreground/80",
-          "flex items-center gap-2 justify-start md:justify-center px-2 py-1 md:px-3 md:py-2"
+          "flex items-center gap-2 justify-start lg:justify-center px-2 py-1 lg:px-3 lg:py-2"
         )}
         aria-current={isActive ? "page" : undefined}
       >
@@ -65,7 +65,7 @@ function LiveJackpotDisplay() {
       <Button
         variant="ghost"
         className={cn(
-          "text-sm font-medium transition-colors group px-2 py-1 md:px-3 md:py-2 flex items-center gap-1.5", 
+          "text-sm font-medium transition-colors group px-2 py-1 lg:px-3 lg:py-2 flex items-center gap-1.5", 
           isActive ? "text-primary font-bold bg-primary/10" : "text-foreground/80"
         )}
         aria-current={isActive ? "page" : undefined}
@@ -104,7 +104,7 @@ export default function Navbar() {
           <Logo className="h-10 w-auto" />
         </Link>
 
-        <div className="hidden md:flex items-center">
+        <div className="hidden lg:flex items-center">
           <nav className="flex flex-wrap items-center gap-x-1 lg:gap-x-2 gap-y-1">
             {navItems.map((item) => (
               <NavLink key={item.name} href={item.href} icon={item.icon}>
@@ -113,7 +113,7 @@ export default function Navbar() {
             ))}
             <LiveJackpotDisplay />
           </nav>
-          <div className="ml-2 md:ml-4 flex items-center">
+          <div className="ml-2 lg:ml-4 flex items-center">
             {isLoading ? (
               <div className="h-9 w-9 bg-muted rounded-full animate-pulse"></div> 
             ) : currentUser ? (
@@ -138,7 +138,7 @@ export default function Navbar() {
           </div>
         </div>
 
-        <div className="md:hidden">
+        <div className="lg:hidden">
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon">
