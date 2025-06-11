@@ -136,24 +136,22 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                   )}
                   
                   <div className={`flex flex-col gap-0.5 ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
-                    <div className={`flex items-center space-x-2 rtl:space-x-reverse ${msg.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                      <span className="text-xs font-semibold text-foreground px-1">{msg.name}</span>
-                    </div>
+                    <span className="text-xs font-semibold text-foreground px-1">{msg.name}</span>
                     
-                    <div className={`flex items-end gap-1.5 ${msg.sender === 'user' ? 'flex-row' : 'flex-row'}`}>
+                    <div className={`flex items-end gap-1.5 ${msg.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
                       <div
                         className={cn(
-                          'p-3 rounded-lg text-sm font-normal break-words',
+                          'p-3 rounded-lg text-sm font-normal break-words', // Added break-words
                           msg.sender === 'user'
-                            ? 'bg-primary text-primary-foreground rounded-br-none'
-                            : 'bg-secondary text-secondary-foreground rounded-bl-none'
+                            ? 'bg-primary text-primary-foreground rounded-tr-none'
+                            : 'bg-secondary text-secondary-foreground rounded-tl-none'
                         )}
                       >
                         {msg.text}
                       </div>
                       <div
                         className={cn(
-                          'text-xs pb-0.5', 
+                          'text-xs pb-0.5 shrink-0', 
                           msg.sender === 'user' ? 'text-primary-foreground/70' : 'text-muted-foreground'
                         )}
                       >
