@@ -22,8 +22,8 @@ interface Message {
   text: string;
   sender: 'user' | 'bot';
   name: string;
-  avatar?: string; // For bot avatar
-  userAvatarUrl?: string; // For user avatar
+  avatar?: string; 
+  userAvatarUrl?: string;
   timestamp: Date;
   botAvatarHint?: string;
 }
@@ -43,11 +43,11 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     if (isOpen && !authIsLoading) {
       if (currentUser) {
         setMessages([
-          { id: 'welcome-bot', text: `Hi ${currentUser.username}! I'm ${botName}. How can I help you?`, sender: 'bot', name: botName, timestamp: new Date(), avatar: botAvatarPlaceholder, botAvatarHint: botAvatarHint }
+          { id: 'welcome-bot', text: `Hi ${currentUser.username}! How can I help you?`, sender: 'bot', name: botName, timestamp: new Date(), avatar: botAvatarPlaceholder, botAvatarHint: botAvatarHint }
         ]);
       } else {
         setMessages([
-          { id: 'login-prompt-bot', text: `Welcome! I'm ${botName}. Please log in or sign up to chat.`, sender: 'bot', name: botName, timestamp: new Date(), avatar: botAvatarPlaceholder, botAvatarHint: botAvatarHint }
+          { id: 'login-prompt-bot', text: `Welcome! Please log in or sign up to chat.`, sender: 'bot', name: botName, timestamp: new Date(), avatar: botAvatarPlaceholder, botAvatarHint: botAvatarHint }
         ]);
       }
       setInputValue('');
@@ -101,7 +101,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     setTimeout(() => {
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: `Thanks, ${currentUser.username}! ${botName} has received your message. (Simulated)`,
+        text: `Thanks, ${currentUser.username}! I've received your message. (Simulated)`,
         sender: 'bot',
         name: botName,
         avatar: botAvatarPlaceholder,
@@ -132,24 +132,36 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
               const isUserMessage = msg.sender === 'user';
               return (
                 <div key={msg.id} className={`flex ${isUserMessage ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`flex items-start gap-2.5 max-w-[80%]`}>
-                    {!isUserMessage && (
-                      <Avatar className="h-8 w-8 shrink-0">
-                        <AvatarImage src={msg.avatar} alt={msg.name} data-ai-hint={msg.botAvatarHint} />
-                        <AvatarFallback className="bg-accent text-accent-foreground">
-                          {msg.name.substring(0, 1).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                    )}
+                  <div className={cn(`flex items-start gap-2.5 max-w-[80%]` , isUserMessage ? 'flex-row-reverse' : 'flex-row')}>
                     
-                    <div className={cn('flex flex-col gap-0.5 min-w-0', isUserMessage ? 'items-end flex-1' : 'items-start')}>
+                    <Avatar className="h-8 w-8 shrink-0">
+                      {isUserMessage && currentUser ? (
+                        <>
+                          {msg.userAvatarUrl ? (
+                            <AvatarImage src={msg.userAvatarUrl} alt={currentUser.username} />
+                          ) : null}
+                          <AvatarFallback className="bg-primary text-primary-foreground">
+                            {currentUser.username ? currentUser.username.charAt(0).toUpperCase() : <UserIconLucide className="h-4 w-4" />}
+                          </AvatarFallback>
+                        </>
+                      ) : ( 
+                        <>
+                          <AvatarImage src={msg.avatar} alt={msg.name} data-ai-hint={msg.botAvatarHint} />
+                          <AvatarFallback className="bg-accent text-accent-foreground">
+                             {botName.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase()}
+                          </AvatarFallback>
+                        </>
+                      )}
+                    </Avatar>
+                    
+                    <div className={cn('flex flex-col gap-0.5 min-w-0', isUserMessage ? 'items-end' : 'items-start')}>
                       <span className="text-xs font-semibold text-foreground px-1">{msg.name}</span>
                       <div
                         className={cn(
                           'p-3 rounded-lg text-sm font-normal min-w-0', 
                           isUserMessage
-                            ? 'bg-primary text-primary-foreground rounded-tr-none break-all' 
-                            : 'bg-secondary text-secondary-foreground rounded-tl-none break-words'
+                            ? 'bg-primary text-primary-foreground rounded-br-none break-all' 
+                            : 'bg-secondary text-secondary-foreground rounded-bl-none break-words'
                         )}
                       >
                         {msg.text}
@@ -163,17 +175,6 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                         {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </div>
                     </div>
-
-                    {isUserMessage && currentUser && (
-                      <Avatar className="h-8 w-8 shrink-0">
-                        {msg.userAvatarUrl ? (
-                          <AvatarImage src={msg.userAvatarUrl} alt={currentUser.username} />
-                        ) : null}
-                        <AvatarFallback className="bg-primary text-primary-foreground">
-                          {currentUser.username ? currentUser.username.charAt(0).toUpperCase() : <UserIconLucide className="h-4 w-4" />}
-                        </AvatarFallback>
-                      </Avatar>
-                    )}
                   </div>
                 </div>
               );
@@ -222,4 +223,3 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     </div>
   );
 }
-
