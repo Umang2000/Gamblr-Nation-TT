@@ -17,7 +17,7 @@ export default function ChatSystem() {
 
   return (
     <>
-      <ChatBubble onClick={toggleChat} isChatOpen={isChatOpen} />
+      {!isChatOpen && <ChatBubble onClick={toggleChat} />}
       {isChatOpen && <div className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm md:hidden" onClick={closeChat} />}
       <ChatSidebar isOpen={isChatOpen} onClose={closeChat} />
     </>

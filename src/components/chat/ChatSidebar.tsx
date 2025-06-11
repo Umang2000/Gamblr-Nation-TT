@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, FormEvent } from 'react';
-import { Send, X, User } from 'lucide-react';
+import { Send, ChevronLeft, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -30,12 +30,14 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (isOpen && messages.length === 0) {
+    if (isOpen && messages.length === 0 && !isNameSet) {
+      // Only add welcome message if name is not set yet to avoid adding it multiple times
+      // if chat is closed and reopened before name is set.
       setMessages([
-        { id: '1', text: 'Welcome to GamblrNation chat! Feel free to ask anything.', sender: 'bot', name: 'Support Bot', timestamp: new Date() }
+        { id: '1', text: 'Welcome to GamblrNation chat! Set your name to begin.', sender: 'bot', name: 'Support Bot', timestamp: new Date() }
       ]);
     }
-  }, [isOpen]);
+  }, [isOpen, messages.length, isNameSet]);
   
   useEffect(() => {
     // Auto-scroll to bottom
@@ -51,7 +53,10 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     e.preventDefault();
     if (userName.trim()) {
       setIsNameSet(true);
-      setMessages(prev => [...prev, { id: Date.now().toString(), text: `Name set to ${userName}.`, sender: 'bot', name: 'System', timestamp: new Date() }]);
+      setMessages(prev => [
+        { id: '1', text: 'Welcome to GamblrNation chat! Feel free to ask anything.', sender: 'bot', name: 'Support Bot', timestamp: new Date() },
+        { id: Date.now().toString(), text: `Name set to ${userName}. You can start chatting now!`, sender: 'bot', name: 'System', timestamp: new Date() }
+      ]);
     }
   };
 
@@ -82,7 +87,8 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     }, 1000);
   };
 
-  if (!isOpen) return null;
+  // No need to render if not open, ChatSystem handles this
+  // if (!isOpen) return null; 
 
   return (
     <div className={cn(
@@ -97,7 +103,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
         <header className="flex items-center justify-between p-4 border-b border-border">
           <h2 id="chat-sidebar-title" className="text-lg font-semibold font-headline text-primary">Community Chat</h2>
           <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close chat">
-            <X className="h-5 w-5 text-muted-foreground hover:text-primary" />
+            <ChevronLeft className="h-5 w-5 text-muted-foreground hover:text-primary" />
           </Button>
         </header>
 

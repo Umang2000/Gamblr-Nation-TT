@@ -4,67 +4,92 @@
 
 @layer base {
   :root {
-    --background: 276 47% 11%; /* #201028 */
-    --foreground: 255 100% 97%; /* #F3EFFF */
+    --background: 200 30% 10%; /* Dark Desaturated Blue-Cyan e.g., #111A1C */
+    --foreground: 200 10% 90%; /* Very Light Cool Gray e.g., #E3E7E7 */
 
-    --muted: 276 30% 25%;
-    --muted-foreground: 276 20% 75%; /* Adjusted for better visibility */
+    --muted: 200 30% 20%; /* Lighter version of background */
+    --muted-foreground: 200 10% 65%; /* Darker version of foreground */
 
-    --popover: 276 47% 13%;
-    --popover-foreground: 255 100% 97%;
+    --popover: 200 30% 12%; /* Slightly lighter than background */
+    --popover-foreground: 200 10% 90%; /* Same as foreground */
 
-    --card: 276 47% 15%;
-    --card-foreground: 255 100% 97%;
+    --card: 200 30% 14%; /* Slightly lighter than background */
+    --card-foreground: 200 10% 90%; /* Same as foreground */
 
-    --border: 276 40% 30%;
-    --input: 276 40% 20%;
+    --border: 200 25% 30%; /* Muted, but visible border */
+    --input: 200 30% 18%; /* Darker than card */
 
-    --primary: 283 46% 54%; /* #A050C3 */
-    --primary-foreground: 283 46% 95%;
+    --primary: 180 70% 40%; /* Vibrant Teal e.g., #1FA9A9 */
+    --primary-foreground: 180 70% 95%; /* Very light, for text on primary */
 
-    --secondary: 283 30% 40%;
-    --secondary-foreground: 283 30% 90%;
+    --secondary: 210 50% 50%; /* Desaturated Blue */
+    --secondary-foreground: 210 50% 95%;
     
-    --accent: 340 82% 52%; /* #E91E63 */
-    --accent-foreground: 340 82% 95%;
+    --accent: 150 60% 45%; /* Green e.g., #33B06B */
+    --accent-foreground: 150 60% 95%; /* Very light, for text on accent */
 
-    --destructive: 0 70% 55%;
+    --destructive: 0 70% 55%; /* Standard Red */
     --destructive-foreground: 0 0% 98%;
 
-    --ring: 283 46% 60%; /* Based on primary */
+    --ring: 180 70% 50%; /* Based on primary */
 
     --radius: 0.5rem;
 
-    /* Chart colors can be adjusted if charts are used extensively */
-    --chart-1: 283 46% 54%; /* primary */
-    --chart-2: 340 82% 52%; /* accent */
-    --chart-3: 220 50% 60%; /* A blueish tone */
-    --chart-4: 120 50% 60%; /* A greenish tone */
-    --chart-5: 45 70% 60%; /* An orange/yellow tone */
+    /* Chart colors */
+    --chart-1: 180 70% 40%; /* primary (Teal) */
+    --chart-2: 150 60% 45%; /* accent (Green) */
+    --chart-3: 210 60% 55%; /* A distinct blue */
+    --chart-4: 100 50% 50%; /* A lime green */
+    --chart-5: 40 70% 60%; /* An orange/yellow tone for contrast */
+
+    /* Sidebar specific colors (if ui/sidebar is used directly) */
+    --sidebar-background: 200 30% 13%;
+    --sidebar-foreground: 200 10% 90%;
+    --sidebar-primary: 180 70% 40%;
+    --sidebar-primary-foreground: 180 70% 95%;
+    --sidebar-accent: 150 60% 45%;
+    --sidebar-accent-foreground: 150 60% 95%;
+    --sidebar-border: 200 25% 30%;
+    --sidebar-ring: 180 70% 50%;
   }
 
-  /* Remove .dark specific overrides if the default theme is already dark */
-  /* Or ensure .dark variables are identical to :root if only one theme is supported */
   .dark {
-    --background: 276 47% 11%;
-    --foreground: 255 100% 97%;
-    --muted: 276 30% 25%;
-    --muted-foreground: 276 20% 75%;
-    --popover: 276 47% 13%;
-    --popover-foreground: 255 100% 97%;
-    --card: 276 47% 15%;
-    --card-foreground: 255 100% 97%;
-    --border: 276 40% 30%;
-    --input: 276 40% 20%;
-    --primary: 283 46% 54%;
-    --primary-foreground: 283 46% 95%;
-    --secondary: 283 30% 40%;
-    --secondary-foreground: 283 30% 90%;
-    --accent: 340 82% 52%;
-    --accent-foreground: 340 82% 95%;
+    --background: 200 30% 10%;
+    --foreground: 200 10% 90%;
+    --muted: 200 30% 20%;
+    --muted-foreground: 200 10% 65%;
+    --popover: 200 30% 12%;
+    --popover-foreground: 200 10% 90%;
+    --card: 200 30% 14%;
+    --card-foreground: 200 10% 90%;
+    --border: 200 25% 30%;
+    --input: 200 30% 18%;
+    --primary: 180 70% 40%;
+    --primary-foreground: 180 70% 95%;
+    --secondary: 210 50% 50%;
+    --secondary-foreground: 210 50% 95%;
+    --accent: 150 60% 45%;
+    --accent-foreground: 150 60% 95%;
     --destructive: 0 70% 55%;
     --destructive-foreground: 0 0% 98%;
-    --ring: 283 46% 60%;
+    --ring: 180 70% 50%;
+    
+    /* Chart colors for dark theme */
+    --chart-1: 180 70% 40%;
+    --chart-2: 150 60% 45%;
+    --chart-3: 210 60% 55%;
+    --chart-4: 100 50% 50%;
+    --chart-5: 40 70% 60%;
+    
+    /* Sidebar specific colors for dark theme */
+    --sidebar-background: 200 30% 13%;
+    --sidebar-foreground: 200 10% 90%;
+    --sidebar-primary: 180 70% 40%;
+    --sidebar-primary-foreground: 180 70% 95%;
+    --sidebar-accent: 150 60% 45%;
+    --sidebar-accent-foreground: 150 60% 95%;
+    --sidebar-border: 200 25% 30%;
+    --sidebar-ring: 180 70% 50%;
   }
 }
 
