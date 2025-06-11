@@ -1,19 +1,30 @@
 
+'use client';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { PlayCircle, CalendarClock, Users } from 'lucide-react';
 
-// Mock data for streamers and schedule
-const liveStreamers = [
+// Mock data for other streamers and schedule
+const otherLiveStreamers = [
   { id: '1', name: 'ShadowStrikerX', game: 'Cosmic Conquest', viewers: 1250, isLive: true, avatarSeed: 'SSX', twitchUsername: 'shadowstrikerx' },
   { id: '2', name: 'MysticMaven', game: 'Mystic Realms', viewers: 980, isLive: true, avatarSeed: 'MM', twitchUsername: 'mysticmaven' },
   { id: '3', name: 'NeonNinja', game: 'Neon Racer', viewers: 0, isLive: false, scheduledAt: 'Today, 8:00 PM PST', avatarSeed: 'NN', twitchUsername: 'neonninja' },
 ];
 
-const featuredStreamer = liveStreamers.find(s => s.isLive) || liveStreamers[0];
+// Define the main streamer for the embed
+const mainEmbeddedStreamer = {
+  name: 'afterhoursaz',
+  game: 'Live!', // You can change this to a specific game if known
+  twitchUsername: 'afterhoursaz',
+  avatarSeed: 'AH', // Placeholder avatar seed
+  isLive: true, // Assume live for the main embed
+  viewers: 0, // Viewers can be dynamic or a placeholder
+};
 
 export default function LiveStreamPage() {
-  const twitchEmbedUrl = `https://player.twitch.tv/?channel=${featuredStreamer.twitchUsername}&parent=${typeof window !== 'undefined' ? window.location.hostname : 'localhost'}`;
+  // Construct the Twitch embed URL with the specified channel and parent domain
+  const twitchEmbedUrl = `https://player.twitch.tv/?channel=${mainEmbeddedStreamer.twitchUsername}&parent=gamblrnation.netlify.app&muted=true`;
 
   return (
     <div className="space-y-8">
@@ -25,7 +36,7 @@ export default function LiveStreamPage() {
       
       <Card className="overflow-hidden glass-card">
         <CardHeader>
-          <CardTitle className="text-2xl text-accent">Now Streaming: {featuredStreamer.name} - {featuredStreamer.game}</CardTitle>
+          <CardTitle className="text-2xl text-accent">Now Streaming: {mainEmbeddedStreamer.name} - {mainEmbeddedStreamer.game}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="aspect-video bg-black rounded-lg overflow-hidden border border-primary/30">
@@ -34,22 +45,23 @@ export default function LiveStreamPage() {
               height="100%"
               width="100%"
               allowFullScreen={true}
-              title={`${featuredStreamer.name}'s Live Stream`}
+              title={`${mainEmbeddedStreamer.name}'s Live Stream`}
               className="border-0"
             ></iframe>
           </div>
            <div className="mt-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Avatar>
-                <AvatarImage src="https://placehold.co/40x40/CCCCCC/333333.png" alt={featuredStreamer.name} data-ai-hint="streamer avatar" />
-                <AvatarFallback>{featuredStreamer.avatarSeed}</AvatarFallback>
+                <AvatarImage src="https://placehold.co/40x40/CCCCCC/333333.png" alt={mainEmbeddedStreamer.name} data-ai-hint="streamer avatar"/>
+                <AvatarFallback>{mainEmbeddedStreamer.avatarSeed}</AvatarFallback>
               </Avatar>
-              <span className="font-semibold">{featuredStreamer.name}</span>
+              <span className="font-semibold">{mainEmbeddedStreamer.name}</span>
             </div>
-            {featuredStreamer.isLive && (
+            {mainEmbeddedStreamer.isLive && (
               <div className="flex items-center gap-1 text-red-500 font-semibold">
                 <div className="h-3 w-3 bg-red-500 rounded-full animate-pulse"></div>
-                LIVE ({featuredStreamer.viewers.toLocaleString()} viewers)
+                LIVE 
+                {/* {mainEmbeddedStreamer.viewers > 0 && `(${mainEmbeddedStreamer.viewers.toLocaleString()} viewers)`} */}
               </div>
             )}
           </div>
@@ -61,7 +73,7 @@ export default function LiveStreamPage() {
           <CardTitle className="text-2xl text-primary flex items-center"><CalendarClock className="mr-3 h-7 w-7 text-primary"/>Stream Schedule & Other Streamers</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {liveStreamers.map((streamer) => (
+          {otherLiveStreamers.map((streamer) => (
             <Card key={streamer.id} className="flex flex-col md:flex-row items-center justify-between p-4 bg-card/50 hover:border-primary/50 transition-colors">
               <div className="flex items-center space-x-4 mb-2 md:mb-0">
                 <Avatar className="h-12 w-12">
@@ -88,6 +100,9 @@ export default function LiveStreamPage() {
               </div>
             </Card>
           ))}
+           {otherLiveStreamers.length === 0 && (
+            <p className="text-muted-foreground text-center py-4">No other streamers currently scheduled.</p>
+          )}
         </CardContent>
       </Card>
     </div>
