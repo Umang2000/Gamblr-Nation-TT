@@ -22,9 +22,10 @@ interface Message {
   text: string;
   sender: 'user' | 'bot';
   name: string;
-  avatar?: string; 
+  avatar?: string;
   userAvatarUrl?: string;
   timestamp: Date;
+  botAvatarHint?: string;
 }
 
 export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
@@ -34,15 +35,18 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
+  const botAvatarPlaceholder = "https://placehold.co/40x40/FFFFFF/201028?text=B";
+  const botAvatarHint = "marshmello bot";
+
   useEffect(() => {
     if (isOpen && !authIsLoading) {
       if (currentUser) {
         setMessages([
-          { id: 'welcome-bot', text: `Hi ${currentUser.username}! Welcome to the GamblrNation chat. How can I help you today?`, sender: 'bot', name: 'Support Bot', timestamp: new Date(), avatar: `https://placehold.co/40x40/32080a/FFFFFF?text=B` }
+          { id: 'welcome-bot', text: `Hi ${currentUser.username}! How can I help you?`, sender: 'bot', name: 'Support Bot', timestamp: new Date(), avatar: botAvatarPlaceholder, botAvatarHint: botAvatarHint }
         ]);
       } else {
         setMessages([
-          { id: 'login-prompt-bot', text: 'Welcome to GamblrNation chat! Please log in or sign up to participate.', sender: 'bot', name: 'Support Bot', timestamp: new Date(), avatar: `https://placehold.co/40x40/32080a/FFFFFF?text=B` }
+          { id: 'login-prompt-bot', text: 'Welcome! Please log in or sign up to chat.', sender: 'bot', name: 'Support Bot', timestamp: new Date(), avatar: botAvatarPlaceholder, botAvatarHint: botAvatarHint }
         ]);
       }
       setInputValue('');
@@ -96,10 +100,11 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     setTimeout(() => {
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: `Thanks for your message, ${currentUser.username}! This is a simulated response from GamblrBot. I can also write longer messages that should wrap correctly to multiple lines if needed, just like a paragraph.`,
+        text: `Thanks, ${currentUser.username}! I've received your message. (Simulated)`,
         sender: 'bot',
         name: 'Support Bot',
-        avatar: `https://placehold.co/40x40/32080a/FFFFFF?text=B`,
+        avatar: botAvatarPlaceholder,
+        botAvatarHint: botAvatarHint,
         timestamp: new Date(),
       };
       setMessages((prevMessages) => [...prevMessages, botResponse]);
@@ -127,9 +132,9 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
               return (
                 <div key={msg.id} className={`flex ${isUserMessage ? 'justify-end' : 'justify-start'}`}>
                   <div className={`flex items-start gap-2.5 max-w-[80%]`}>
-                    {!isUserMessage && ( // Bot avatar first
+                    {!isUserMessage && (
                       <Avatar className="h-8 w-8 shrink-0">
-                        <AvatarImage src={msg.avatar} alt={msg.name} />
+                        <AvatarImage src={msg.avatar} alt={msg.name} data-ai-hint={msg.botAvatarHint} />
                         <AvatarFallback className="bg-accent text-accent-foreground">
                           {msg.name.substring(0, 1).toUpperCase()}
                         </AvatarFallback>
@@ -158,7 +163,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                       </div>
                     </div>
 
-                    {isUserMessage && currentUser && ( // User avatar last
+                    {isUserMessage && currentUser && (
                       <Avatar className="h-8 w-8 shrink-0">
                         {msg.userAvatarUrl ? (
                           <AvatarImage src={msg.userAvatarUrl} alt={currentUser.username} />
