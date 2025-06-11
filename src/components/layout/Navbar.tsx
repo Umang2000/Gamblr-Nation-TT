@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Gamepad2, LogIn } from 'lucide-react'; // Removed UserPlus
+import { Menu, X, Gamepad2, LogIn } from 'lucide-react';
 import { useState } from 'react';
 import Logo from '@/components/icons/Logo';
 import { Button } from '@/components/ui/button';
@@ -12,20 +12,16 @@ import { cn } from '@/lib/utils';
 
 const navItems = [
   { name: 'Home', href: '/', icon: Gamepad2 },
-  { name: 'Forum', href: '/forum', icon: Gamepad2 },
   { name: 'Games', href: '/games', icon: Gamepad2 },
   { name: 'Leaderboard', href: '/leaderboard', icon: Gamepad2 },
   { name: 'Marketplace', href: '/marketplace', icon: Gamepad2 },
   { name: 'Live Stream', href: '/live-stream', icon: Gamepad2 },
-  { name: 'Game Test', href: '/game-test', icon: Gamepad2 },
   { name: 'Daily Case', href: '/daily-case', icon: Gamepad2 },
-  { name: 'Support', href: '/support', icon: Gamepad2 },
   { name: 'Jackpot', href: '/progressive-jackpot', icon: Gamepad2 },
 ];
 
 const authNavItems = [
   { name: 'Login', href: '/login', icon: LogIn },
-  // { name: 'Sign Up', href: '/signup', icon: UserPlus }, // Removed Sign Up
 ];
 
 const NavLink = ({ href, children, onClick, icon: Icon }: { href: string; children: React.ReactNode; onClick?: () => void; icon?: React.ElementType }) => {
@@ -71,7 +67,7 @@ export default function Navbar() {
               </NavLink>
             ))}
           </nav>
-          <div className="ml-2 md:ml-4 flex items-center"> {/* Added ml-2 md:ml-4 for spacing */}
+          <div className="ml-2 md:ml-4 flex items-center">
             {authNavItems.map((item) => (
                <NavLink key={item.name} href={item.href} icon={item.icon}>
                 {item.name}
@@ -103,13 +99,13 @@ export default function Navbar() {
                       </Button>
                   </SheetClose>
                 </div>
-                <nav className="flex-grow p-4 space-y-1 overflow-y-auto"> {/* Reduced space-y-2 to space-y-1 */}
+                <nav className="flex-grow p-4 space-y-1 overflow-y-auto">
                   {navItems.map((item) => (
                     <NavLink key={item.name} href={item.href} onClick={() => setMobileMenuOpen(false)} icon={item.icon}>
                       {item.name}
                     </NavLink>
                   ))}
-                  <hr className="my-3 border-border/40" /> {/* Reduced my-4 to my-3 */}
+                  <hr className="my-3 border-border/40" />
                   {authNavItems.map((item) => (
                     <NavLink key={item.name} href={item.href} onClick={() => setMobileMenuOpen(false)} icon={item.icon}>
                       {item.name}

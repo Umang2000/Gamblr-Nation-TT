@@ -1,7 +1,9 @@
+
 import type {Metadata} from 'next';
 import './globals.css';
 import Navbar from '@/components/layout/Navbar';
 import ChatSystem from '@/components/chat/ChatSystem';
+import SupportBubble from '@/components/support/SupportBubble';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
@@ -29,6 +31,7 @@ export default function RootLayout({
           {children}
         </main>
         <ChatSystem />
+        <SupportBubble />
         <Toaster />
       </body>
     </html>
