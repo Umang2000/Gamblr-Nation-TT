@@ -22,8 +22,8 @@ interface Message {
   text: string;
   sender: 'user' | 'bot';
   name: string;
-  avatar?: string; // For bot avatar
-  userAvatarUrl?: string; // For user avatar
+  avatar?: string; 
+  userAvatarUrl?: string;
   timestamp: Date;
 }
 
@@ -93,7 +93,6 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     setMessages((prevMessages) => [...prevMessages, userMessage]);
     setInputValue('');
 
-    // Simulate bot response
     setTimeout(() => {
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
@@ -140,7 +139,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                     
                     <div
                       className={cn(
-                        'p-3 rounded-lg text-sm font-normal break-words',
+                        'p-3 rounded-lg text-sm font-normal break-words min-w-0',
                         msg.sender === 'user'
                           ? 'bg-primary text-primary-foreground rounded-tr-none'
                           : 'bg-secondary text-secondary-foreground rounded-tl-none'
