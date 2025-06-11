@@ -2,7 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import { LifeBuoy } from 'lucide-react';
+import { HelpCircle } from 'lucide-react'; // Changed from LifeBuoy
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -18,7 +18,7 @@ export default function SupportBubble() {
         )}
         aria-label="Open support page"
       >
-        <LifeBuoy className="h-7 w-7" />
+        <HelpCircle className="h-7 w-7" /> {/* Changed from LifeBuoy */}
       </Button>
     </Link>
   );
