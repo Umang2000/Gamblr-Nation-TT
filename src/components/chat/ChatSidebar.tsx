@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect, useRef, FormEvent } from 'react';
-import { Send, ChevronLeft, User } from 'lucide-react';
+import { Send, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils';
 
 interface ChatSidebarProps {
   isOpen: boolean;
-  onClose: () => void;
+  onClose: () => void; // Kept for potential future use or if backdrop closes it
 }
 
 interface Message {
@@ -96,9 +96,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
       <div className="flex flex-col h-full">
         <header className="flex items-center justify-between p-4 border-b border-border">
           <h2 id="chat-sidebar-title" className="text-lg font-semibold font-headline text-primary">Community Chat</h2>
-          <Button variant="ghost" onClick={onClose} aria-label="Close chat" className="p-1">
-            <ChevronLeft className="h-6 w-6 text-primary hover:text-primary/80" />
-          </Button>
+          {/* Close button removed from here */}
         </header>
 
         {!isNameSet ? (
@@ -172,4 +170,3 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     </div>
   );
 }
-
