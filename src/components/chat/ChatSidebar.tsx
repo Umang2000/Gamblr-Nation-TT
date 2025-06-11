@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect, useRef, FormEvent } from 'react';
-import { Send, User, X, ChevronLeft } from 'lucide-react';
+import { Send, User, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -98,7 +98,6 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
       <div className="flex flex-col h-full">
         <header className="flex items-center justify-between p-4 border-b border-border">
           <h2 id="chat-sidebar-title" className="text-lg font-semibold font-headline text-primary">Community Chat</h2>
-          {/* The close button is now at the bottom */}
         </header>
 
         {!isNameSet ? (
@@ -162,14 +161,6 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                   aria-label="Chat message input"
                   disabled={!isNameSet}
                 />
-                <Button
-                  size="icon"
-                  onClick={onClose}
-                  className="bg-[#E91E63] hover:bg-[#d81b60] text-white rounded-md p-2 flex items-center justify-center shrink-0"
-                  aria-label="Close chat"
-                >
-                  <X className="h-5 w-5" strokeWidth={2.5} />
-                </Button>
                 <Button 
                   type="submit" 
                   size="icon" 
@@ -178,6 +169,15 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                   disabled={!isNameSet || inputValue.trim() === ''}
                 >
                   <Send className="h-5 w-5" />
+                </Button>
+                <Button
+                  size="icon"
+                  onClick={onClose}
+                  className="bg-[#E91E63] hover:bg-[#d81b60] text-white rounded-md p-2 flex items-center justify-center shrink-0"
+                  aria-label="Close chat"
+                  style={{ width: '40px', height: '40px' }} 
+                >
+                  <X className="h-5 w-5" strokeWidth={2.5} />
                 </Button>
               </form>
             </div>
