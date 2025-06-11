@@ -1,8 +1,9 @@
+
 'use client';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Gamepad2, LogIn, UserPlus } from 'lucide-react';
+import { Menu, X, Gamepad2, LogIn } from 'lucide-react'; // Removed UserPlus
 import { useState } from 'react';
 import Logo from '@/components/icons/Logo';
 import { Button } from '@/components/ui/button';
@@ -24,7 +25,7 @@ const navItems = [
 
 const authNavItems = [
   { name: 'Login', href: '/login', icon: LogIn },
-  { name: 'Sign Up', href: '/signup', icon: UserPlus },
+  // { name: 'Sign Up', href: '/signup', icon: UserPlus }, // Removed Sign Up
 ];
 
 const NavLink = ({ href, children, onClick, icon: Icon }: { href: string; children: React.ReactNode; onClick?: () => void; icon?: React.ElementType }) => {
@@ -61,20 +62,22 @@ export default function Navbar() {
           <Logo className="h-10 w-auto" />
         </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-1 lg:space-x-2">
-          {navItems.map((item) => (
-            <NavLink key={item.name} href={item.href} icon={item.icon}>
-              {item.name}
-            </NavLink>
-          ))}
-        </nav>
-        <div className="hidden md:flex items-center space-x-2">
-          {authNavItems.map((item) => (
-             <NavLink key={item.name} href={item.href} icon={item.icon}>
-              {item.name}
-            </NavLink>
-          ))}
+        {/* Desktop Navigation & Auth */}
+        <div className="hidden md:flex items-center">
+          <nav className="flex flex-wrap items-center gap-x-1 lg:gap-x-2 gap-y-1">
+            {navItems.map((item) => (
+              <NavLink key={item.name} href={item.href} icon={item.icon}>
+                {item.name}
+              </NavLink>
+            ))}
+          </nav>
+          <div className="ml-2 md:ml-4 flex items-center"> {/* Added ml-2 md:ml-4 for spacing */}
+            {authNavItems.map((item) => (
+               <NavLink key={item.name} href={item.href} icon={item.icon}>
+                {item.name}
+              </NavLink>
+            ))}
+          </div>
         </div>
 
 
@@ -100,13 +103,13 @@ export default function Navbar() {
                       </Button>
                   </SheetClose>
                 </div>
-                <nav className="flex-grow p-4 space-y-2 overflow-y-auto">
+                <nav className="flex-grow p-4 space-y-1 overflow-y-auto"> {/* Reduced space-y-2 to space-y-1 */}
                   {navItems.map((item) => (
                     <NavLink key={item.name} href={item.href} onClick={() => setMobileMenuOpen(false)} icon={item.icon}>
                       {item.name}
                     </NavLink>
                   ))}
-                  <hr className="my-4 border-border/40" />
+                  <hr className="my-3 border-border/40" /> {/* Reduced my-4 to my-3 */}
                   {authNavItems.map((item) => (
                     <NavLink key={item.name} href={item.href} onClick={() => setMobileMenuOpen(false)} icon={item.icon}>
                       {item.name}
