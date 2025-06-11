@@ -30,7 +30,7 @@ interface Message {
 }
 
 const MAX_CHAT_LENGTH = 160;
-const MOCK_LIVE_USERS = 376;
+const MOCK_LIVE_USERS = 2; // Updated user count
 
 export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
   const { currentUser, isLoading: authIsLoading } = useAuth();
@@ -41,7 +41,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
   const [isRulesOpen, setIsRulesOpen] = useState(false);
 
   const botName = "Gamblr Nation Bot";
-  const botAvatarPlaceholder = "https://placehold.co/40x40/A050C3/FFFFFF?text=GN";
+  const botAvatarPlaceholder = "https://placehold.co/40x40/A050C3/FFFFFF.png?text=GN";
   const botAvatarHint = "cartoon monkey";
 
   useEffect(() => {
@@ -131,7 +131,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
   return (
     <div className={cn(
       "fixed left-0 z-40 w-80 bg-card text-card-foreground border-r border-border shadow-xl transform transition-transform duration-300 ease-in-out",
-      "top-16 h-[calc(100vh-4rem)]", // Adjusted top and height
+      "top-16 h-[calc(100vh-4rem)]", 
       isOpen ? "translate-x-0" : "-translate-x-full"
     )}
       role="dialog"
@@ -153,7 +153,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
             size="icon"
             variant="ghost"
             onClick={onClose}
-            className="text-muted-foreground hover:text-foreground h-7 w-7"
+            className="text-accent hover:text-accent/80 h-7 w-7" // Updated close button color
             aria-label="Close chat"
           >
             <ChevronLeft className="h-5 w-5" strokeWidth={2.5} />
@@ -188,10 +188,10 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                       <span className="text-xs font-semibold text-foreground px-1">{msg.name}</span>
                       <div
                         className={cn(
-                          'p-3 rounded-lg text-sm font-normal min-w-0', 
+                          'p-3 rounded-lg text-sm font-normal min-w-0 break-all', 
                           isUserMessage
-                            ? 'bg-primary text-primary-foreground rounded-br-none break-all' 
-                            : 'bg-secondary text-secondary-foreground rounded-bl-none break-all'
+                            ? 'bg-primary text-primary-foreground rounded-br-none' 
+                            : 'bg-secondary text-secondary-foreground rounded-bl-none'
                         )}
                       >
                         {msg.text}
@@ -220,16 +220,17 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                 value={inputValue}
                 onChange={handleInputChange}
                 placeholder={authIsLoading ? "Checking login..." : (currentUser ? "Type Message Here..." : "Log in to chat...")}
-                className="flex-grow bg-input text-foreground placeholder:text-muted-foreground pr-10 rounded-md" // Added pr-10 for emoji button
+                className="flex-grow bg-input text-foreground placeholder:text-muted-foreground pr-10 rounded-md" 
                 aria-label="Chat message input"
                 disabled={authIsLoading || !currentUser}
+                maxLength={MAX_CHAT_LENGTH}
               />
               <Button
                 type="button"
                 variant="ghost"
                 size="icon"
                 className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-primary"
-                aria-label="Open emoji picker" // Add functionality later
+                aria-label="Open emoji picker" 
               >
                 <Smile className="h-5 w-5" />
               </Button>
@@ -268,3 +269,4 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     </div>
   );
 }
+
