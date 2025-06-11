@@ -38,11 +38,11 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     if (isOpen && !authIsLoading) {
       if (currentUser) {
         setMessages([
-          { id: 'welcome-bot', text: `Hi ${currentUser.username}! Welcome to the GamblrNation chat.`, sender: 'bot', name: 'Support Bot', timestamp: new Date() }
+          { id: 'welcome-bot', text: `Hi ${currentUser.username}! Welcome to the GamblrNation chat. How can I help you today?`, sender: 'bot', name: 'Support Bot', timestamp: new Date(), avatar: `https://placehold.co/40x40/32080a/FFFFFF?text=B` }
         ]);
       } else {
         setMessages([
-          { id: 'login-prompt-bot', text: 'Welcome to GamblrNation chat! Please log in or sign up to participate.', sender: 'bot', name: 'Support Bot', timestamp: new Date() }
+          { id: 'login-prompt-bot', text: 'Welcome to GamblrNation chat! Please log in or sign up to participate.', sender: 'bot', name: 'Support Bot', timestamp: new Date(), avatar: `https://placehold.co/40x40/32080a/FFFFFF?text=B` }
         ]);
       }
       setInputValue('');
@@ -97,9 +97,10 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     setTimeout(() => {
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: `Thanks for your message, ${currentUser.username}! This is a simulated response.`,
+        text: `Thanks for your message, ${currentUser.username}! This is a simulated response from GamblrBot.`,
         sender: 'bot',
         name: 'Support Bot',
+        avatar: `https://placehold.co/40x40/32080a/FFFFFF?text=B`,
         timestamp: new Date(),
       };
       setMessages((prevMessages) => [...prevMessages, botResponse]);
@@ -134,14 +135,29 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                     </Avatar>
                   )}
                   <div className={`flex flex-col gap-1 ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
+                    {/* Sender Name */}
                     <div className={`flex items-center space-x-2 rtl:space-x-reverse ${msg.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
                         <span className="text-xs font-semibold text-foreground">{msg.name}</span>
                     </div>
-                    <div className={`p-3 rounded-lg ${msg.sender === 'user' ? 'bg-primary text-primary-foreground rounded-br-none' : 'bg-secondary text-secondary-foreground rounded-bl-none'}`}>
-                      <p className="text-sm font-normal">{msg.text}</p>
-                      <div className={`text-xs text-right mt-1 ${msg.sender === 'user' ? 'text-primary-foreground/75' : 'text-secondary-foreground/75'}`}>
-                        {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </div>
+                    {/* Message Bubble */}
+                    <div 
+                      className={cn(
+                        'p-3 rounded-lg text-sm font-normal break-words',
+                        msg.sender === 'user' 
+                          ? 'bg-primary text-primary-foreground rounded-br-none' 
+                          : 'bg-secondary text-secondary-foreground rounded-bl-none'
+                      )}
+                    >
+                      {msg.text}
+                    </div>
+                    {/* Timestamp - outside and below the bubble */}
+                    <div 
+                      className={cn(
+                        'text-xs',
+                        msg.sender === 'user' ? 'text-primary-foreground/70' : 'text-muted-foreground'
+                      )}
+                    >
+                      {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </div>
                   </div>
                   {msg.sender === 'user' && currentUser && (
