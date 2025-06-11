@@ -23,11 +23,11 @@ const KickIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 
 const socialLinks = [
-  { name: 'Discord', href: '#', icon: DiscordIcon, colorClass: 'hover:text-[#5865F2]' },
-  { name: 'Twitch', href: '#', icon: TwitchIcon, colorClass: 'hover:text-[#9146FF]' },
-  { name: 'Kick', href: '#', icon: KickIcon, colorClass: 'hover:text-[#53FC18]' },
-  { name: 'Telegram', href: '#', icon: Send, colorClass: 'hover:text-[#2AABEE]' },
-  { name: 'Twitter', href: '#', icon: TwitterIcon, colorClass: 'hover:text-primary' }, // X logo is often black/white, use primary for theme consistency
+  { name: 'Discord', href: '#', icon: DiscordIcon, brandColorClass: 'text-[#5865F2]' },
+  { name: 'Twitch', href: '#', icon: TwitchIcon, brandColorClass: 'text-[#9146FF]' },
+  { name: 'Kick', href: '#', icon: KickIcon, brandColorClass: 'text-[#53FC18]' },
+  { name: 'Telegram', href: '#', icon: Send, brandColorClass: 'text-[#2AABEE]' },
+  { name: 'Twitter', href: '#', icon: TwitterIcon, brandColorClass: 'text-primary' }, // Using primary for theme consistency with X
 ];
 
 export default function Footer() {
@@ -49,7 +49,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={link.name}
-                className={`text-muted-foreground transition-colors duration-200 ${link.colorClass}`}
+                className={`transition-opacity hover:opacity-80 ${link.brandColorClass}`}
               >
                 <link.icon className="h-6 w-6" />
               </Link>
