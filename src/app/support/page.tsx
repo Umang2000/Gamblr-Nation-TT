@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { LifeBuoy, Send, HelpCircle } from 'lucide-react';
+import { HelpCircle, Send } from 'lucide-react'; // Changed LifeBuoy to HelpCircle
 import { useToast } from "@/hooks/use-toast";
 
 const faqItems = [
@@ -64,7 +64,7 @@ export default function SupportPage() {
   return (
     <div className="space-y-12">
       <div className="text-center">
-        <LifeBuoy className="mx-auto h-16 w-16 text-accent mb-4 element-glow-accent" />
+        <HelpCircle className="mx-auto h-16 w-16 text-accent mb-4 element-glow-accent" /> {/* Changed LifeBuoy to HelpCircle */}
         <h1 className="text-4xl font-bold text-primary text-glow-primary">Support Center</h1>
         <p className="text-muted-foreground mt-2">Need help? We're here for you. Check our FAQs or send us a message.</p>
       </div>
