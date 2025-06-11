@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect, useRef, FormEvent } from 'react';
-import { Send, User, ChevronLeft } from 'lucide-react';
+import { Send, User as UserIconLucide, ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from '@/context/AuthContext'; // Import useAuth
 
 interface ChatSidebarProps {
   isOpen: boolean;
@@ -25,25 +26,18 @@ interface Message {
   timestamp: Date;
 }
 
-// Simulate user authentication state
-// In a real app, this would come from an auth context or service
-// To test logged-in state, set this to an object like: { username: 'YourUsername' }
-// To test logged-out state, set this to null
-const MOCK_CURRENT_USER: { username: string } | null = null; 
-// const MOCK_CURRENT_USER: { username: string } | null = { username: 'GamblrUser1' };
-
-
 export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
+  const { currentUser, isLoading: authIsLoading } = useAuth(); // Use AuthContext
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
-    if (isOpen) {
-      if (MOCK_CURRENT_USER) {
+    if (isOpen && !authIsLoading) { // Only initialize messages once auth state is known
+      if (currentUser) {
         setMessages([
-          { id: 'welcome-bot', text: `Hi ${MOCK_CURRENT_USER.username}! Welcome to the GamblrNation chat.`, sender: 'bot', name: 'Support Bot', timestamp: new Date() }
+          { id: 'welcome-bot', text: `Hi ${currentUser.username}! Welcome to the GamblrNation chat.`, sender: 'bot', name: 'Support Bot', timestamp: new Date() }
         ]);
       } else {
         setMessages([
@@ -52,7 +46,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
       }
       setInputValue(''); // Clear input when chat opens
     }
-  }, [isOpen]);
+  }, [isOpen, currentUser, authIsLoading]); // Add currentUser and authIsLoading as dependencies
   
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -67,7 +61,16 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
   const handleSendMessage = (e: FormEvent) => {
     e.preventDefault();
 
-    if (!MOCK_CURRENT_USER) {
+    if (authIsLoading) { // Prevent sending if auth state is not yet determined
+        toast({
+            title: "Loading...",
+            description: "Please wait while we check your login status.",
+            variant: "default",
+        });
+        return;
+    }
+
+    if (!currentUser) {
       toast({
         title: "Login Required",
         description: "Please log in or sign up to send messages.",
@@ -82,7 +85,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
       id: Date.now().toString(),
       text: inputValue,
       sender: 'user',
-      name: MOCK_CURRENT_USER.username, 
+      name: currentUser.username, 
       timestamp: new Date(),
     };
     setMessages((prevMessages) => [...prevMessages, userMessage]);
@@ -92,7 +95,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     setTimeout(() => {
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: `Thanks for your message, ${MOCK_CURRENT_USER.username}! This is a simulated response.`,
+        text: `Thanks for your message, ${currentUser.username}! This is a simulated response.`,
         sender: 'bot',
         name: 'Support Bot',
         timestamp: new Date(),
@@ -137,10 +140,10 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                       <p className="text-sm font-normal">{msg.text}</p>
                     </div>
                   </div>
-                    {msg.sender === 'user' && MOCK_CURRENT_USER && (
+                    {msg.sender === 'user' && currentUser && (
                     <Avatar className="h-8 w-8">
                         <AvatarFallback className="bg-primary text-primary-foreground">
-                        <User className="h-4 w-4"/>
+                        <UserIconLucide className="h-4 w-4"/>
                       </AvatarFallback>
                     </Avatar>
                   )}
@@ -156,17 +159,17 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder={MOCK_CURRENT_USER ? "Type a message..." : "Log in to chat..."}
+              placeholder={authIsLoading ? "Checking login..." : (currentUser ? "Type a message..." : "Log in to chat...")}
               className="flex-grow bg-input text-foreground placeholder:text-muted-foreground"
               aria-label="Chat message input"
-              disabled={!MOCK_CURRENT_USER && !isOpen} // Keep input disabled if chat is not open or user not mocked
+              disabled={authIsLoading && !isOpen} 
             />
             <Button 
               type="submit" 
               size="icon" 
               className="bg-primary hover:bg-primary/90 text-primary-foreground shrink-0" 
-              aria-label="Send message" 
-              disabled={inputValue.trim() === '' && MOCK_CURRENT_USER !== null} // Disable send if input is empty AND user is logged in. Allow send attempt if not logged in.
+              aria-label="Send message"
+              disabled={authIsLoading || (inputValue.trim() === '' && currentUser !== null)}
             >
               <Send className="h-5 w-5" />
             </Button>
@@ -181,7 +184,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
               <ChevronLeft className="h-6 w-6" strokeWidth={2.5} />
             </Button>
           </form>
-           {!MOCK_CURRENT_USER && isOpen && (
+           {!authIsLoading && !currentUser && isOpen && (
              <p className="text-xs text-muted-foreground mt-2 text-center">
                Want to join the conversation? <Link href="/login" className="text-primary hover:underline font-semibold">Log In</Link> or <Link href="/signup" className="text-primary hover:underline font-semibold">Sign Up</Link>.
              </p>

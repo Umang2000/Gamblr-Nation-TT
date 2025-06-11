@@ -1,6 +1,8 @@
+
 // Using 'use client' for form interactions
 'use client';
 
+import type { User } from '@/types/user';
 import { useState, FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -9,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Checkbox } from "@/components/ui/checkbox";
-import { UserPlus, Eye, EyeOff, Mail, KeyRound, User } from 'lucide-react';
+import { UserPlus, Eye, EyeOff, Mail, KeyRound, User as UserIconLucide } from 'lucide-react';
 import Logo from '@/components/icons/Logo';
 import { useToast } from "@/hooks/use-toast";
 
@@ -47,16 +49,49 @@ export default function SignupPage() {
       return;
     }
 
-    // Simulate API call for signup
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    // Retrieve existing users from localStorage
+    let users: User[] = [];
+    try {
+      const storedUsers = localStorage.getItem('users');
+      if (storedUsers) {
+        users = JSON.parse(storedUsers);
+      }
+    } catch (e) {
+      console.error("Failed to parse users from localStorage", e);
+      // Potentially handle corrupted data, e.g., by clearing it or warning user
+    }
+    
 
-    // Mock signup logic
-    console.log('Signup Data:', { username, email, password });
+    // Check for duplicate email or username
+    if (users.find(u => u.email === email)) {
+      setError('An account with this email already exists.');
+      setIsSubmitting(false);
+      return;
+    }
+    if (users.find(u => u.username === username)) {
+      setError('This username is already taken.');
+      setIsSubmitting(false);
+      return;
+    }
+    
+    // Simulate API call for signup (no actual API call here)
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    const newUser: User = {
+      id: Date.now().toString(), // Simple ID generation for mock
+      username,
+      email,
+      password, // Storing plain password - INSECURE for real apps!
+    };
+
+    users.push(newUser);
+    localStorage.setItem('users', JSON.stringify(users));
+
     toast({
       title: "Account Created!",
       description: "Welcome to GamblrNation Hub! Please log in to continue.",
     });
-    router.push('/login'); // Redirect to login page on successful signup
+    router.push('/login'); 
     
     setIsSubmitting(false);
   };
@@ -76,7 +111,7 @@ export default function SignupPage() {
             <div className="space-y-2">
               <Label htmlFor="username">Username</Label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <UserIconLucide className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input id="username" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Choose a cool username" required className="pl-10 bg-input text-foreground placeholder:text-muted-foreground border-primary/30 focus:border-primary"/>
               </div>
             </div>

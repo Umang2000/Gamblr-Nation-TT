@@ -1,9 +1,11 @@
+
 // Using 'use client' for form interactions
 'use client';
 
+import type { User } from '@/types/user';
 import { useState, FormEvent } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation'; // No longer needed if AuthContext handles redirect
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,9 +13,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { LogIn, Eye, EyeOff, Mail, KeyRound } from 'lucide-react';
 import Logo from '@/components/icons/Logo';
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from '@/context/AuthContext';
 
 export default function LoginPage() {
-  const router = useRouter();
+  // const router = useRouter(); // No longer needed if AuthContext handles redirect
+  const { login } = useAuth();
   const { toast } = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,23 +30,38 @@ export default function LoginPage() {
     setError('');
     setIsSubmitting(true);
 
-    // Basic validation
     if (!email || !password) {
       setError('Email and password are required.');
       setIsSubmitting(false);
       return;
     }
+    
+    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
 
-    // Simulate API call for login
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    let users: User[] = [];
+    try {
+      const storedUsers = localStorage.getItem('users');
+      if (storedUsers) {
+        users = JSON.parse(storedUsers);
+      }
+    } catch (e) {
+      console.error("Failed to parse users from localStorage", e);
+      setError('An error occurred. Please try again.');
+      setIsSubmitting(false);
+      return;
+    }
 
-    // Mock login logic
-    if (email === 'user@example.com' && password === 'password123') {
+    const foundUser = users.find(u => u.email === email);
+
+    if (foundUser && foundUser.password === password) { // INSECURE: Plain text password check
       toast({
         title: "Login Successful!",
         description: "Welcome back to GamblrNation Hub!",
       });
-      router.push('/'); // Redirect to home page on successful login
+      // Exclude password from being stored in currentUser state
+      const { password: _, ...userToLogin } = foundUser; 
+      login(userToLogin); 
+      // router.push('/'); // AuthContext now handles redirect
     } else {
       setError('Invalid email or password.');
       toast({

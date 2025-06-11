@@ -5,6 +5,7 @@ import Navbar from '@/components/layout/Navbar';
 import ChatSystem from '@/components/chat/ChatSystem';
 import SupportBubble from '@/components/support/SupportBubble';
 import { Toaster } from "@/components/ui/toaster";
+import { AuthProvider } from '@/context/AuthContext';
 
 export const metadata: Metadata = {
   title: 'GamblrNation Hub',
@@ -26,13 +27,15 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased flex flex-col min-h-screen bg-background text-foreground">
-        <Navbar />
-        <main className="flex-grow container mx-auto px-4 py-8">
-          {children}
-        </main>
-        <ChatSystem />
-        <SupportBubble />
-        <Toaster />
+        <AuthProvider>
+          <Navbar />
+          <main className="flex-grow container mx-auto px-4 py-8">
+            {children}
+          </main>
+          <ChatSystem />
+          <SupportBubble />
+          <Toaster />
+        </AuthProvider>
       </body>
     </html>
   );
