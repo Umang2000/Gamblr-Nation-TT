@@ -14,7 +14,7 @@ import { useAuth } from '@/context/AuthContext';
 
 interface ChatSidebarProps {
   isOpen: boolean;
-  onClose: () => void; 
+  onClose: () => void;
 }
 
 interface Message {
@@ -48,7 +48,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
       setInputValue('');
     }
   }, [isOpen, currentUser, authIsLoading]);
-  
+
   useEffect(() => {
     if (scrollAreaRef.current) {
       const viewport = scrollAreaRef.current.querySelector('div[data-radix-scroll-area-viewport]');
@@ -63,30 +63,30 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     e.preventDefault();
 
     if (authIsLoading) {
-        toast({
-            title: "Loading...",
-            description: "Please wait while we check your login status.",
-            variant: "default",
-        });
-        return;
+      toast({
+        title: "Loading...",
+        description: "Please wait while we check your login status.",
+        variant: "default",
+      });
+      return;
     }
 
     if (!currentUser) {
       toast({
         title: "Login Required",
-        description: "Please log in or sign up to send messages.",
+        description: "Please log in to send messages.",
         variant: "destructive",
       });
       return;
     }
-    
+
     if (inputValue.trim() === '') return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
       text: inputValue,
       sender: 'user',
-      name: currentUser.username, 
+      name: currentUser.username,
       userAvatarUrl: currentUser.profileImageUrl,
       timestamp: new Date(),
     };
@@ -109,9 +109,9 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
 
   return (
     <div className={cn(
-        "fixed inset-y-0 left-0 z-40 w-80 bg-card text-card-foreground border-r border-border shadow-xl transform transition-transform duration-300 ease-in-out",
-        isOpen ? "translate-x-0" : "-translate-x-full"
-      )}
+      "fixed inset-y-0 left-0 z-40 w-80 bg-card text-card-foreground border-r border-border shadow-xl transform transition-transform duration-300 ease-in-out",
+      isOpen ? "translate-x-0" : "-translate-x-full"
+    )}
       role="dialog"
       aria-modal="true"
       aria-labelledby="chat-sidebar-title"
@@ -125,35 +125,36 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
           <div className="space-y-4">
             {messages.map((msg) => (
               <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`flex items-start gap-2.5 max-w-[80%]`}>
+                <div className={`flex items-start gap-2.5 max-w-[80%]`}> {/* items-start aligns avatar and text block top */}
                   {msg.sender === 'bot' && (
-                    <Avatar className="h-8 w-8">
+                    <Avatar className="h-8 w-8 shrink-0">
                       <AvatarImage src={msg.avatar} alt={msg.name} />
                       <AvatarFallback className="bg-accent text-accent-foreground">
-                        {msg.name.substring(0,1).toUpperCase()}
+                        {msg.name.substring(0, 1).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                   )}
-                  <div className={`flex flex-col gap-1 ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
+                  {/* Text content container (name, bubble, timestamp) */}
+                  <div className={`flex flex-col gap-0.5 ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
                     {/* Sender Name */}
                     <div className={`flex items-center space-x-2 rtl:space-x-reverse ${msg.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                        <span className="text-xs font-semibold text-foreground">{msg.name}</span>
+                      <span className="text-xs font-semibold text-foreground px-1">{msg.name}</span>
                     </div>
                     {/* Message Bubble */}
-                    <div 
+                    <div
                       className={cn(
                         'p-3 rounded-lg text-sm font-normal break-words',
-                        msg.sender === 'user' 
-                          ? 'bg-primary text-primary-foreground rounded-br-none' 
+                        msg.sender === 'user'
+                          ? 'bg-primary text-primary-foreground rounded-br-none'
                           : 'bg-secondary text-secondary-foreground rounded-bl-none'
                       )}
                     >
                       {msg.text}
                     </div>
-                    {/* Timestamp - outside and below the bubble */}
-                    <div 
+                    {/* Timestamp - outside and below the bubble, aligned with bubble's edge */}
+                    <div
                       className={cn(
-                        'text-xs',
+                        'text-xs px-1', // Added px-1 for slight horizontal inset from the very edge of the 80% container
                         msg.sender === 'user' ? 'text-primary-foreground/70' : 'text-muted-foreground'
                       )}
                     >
@@ -161,7 +162,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                     </div>
                   </div>
                   {msg.sender === 'user' && currentUser && (
-                    <Avatar className="h-8 w-8">
+                    <Avatar className="h-8 w-8 shrink-0">
                       {msg.userAvatarUrl ? (
                         <AvatarImage src={msg.userAvatarUrl} alt={currentUser.username} />
                       ) : null}
@@ -185,14 +186,14 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
               placeholder={authIsLoading ? "Checking login..." : (currentUser ? "Type a message..." : "Log in to chat...")}
               className="flex-grow bg-input text-foreground placeholder:text-muted-foreground"
               aria-label="Chat message input"
-              disabled={authIsLoading && !isOpen} 
+              disabled={authIsLoading && !isOpen && !currentUser}
             />
-            <Button 
-              type="submit" 
-              size="icon" 
-              className="bg-primary hover:bg-primary/90 text-primary-foreground shrink-0" 
+            <Button
+              type="submit"
+              size="icon"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground shrink-0"
               aria-label="Send message"
-              disabled={authIsLoading || (inputValue.trim() === '' && currentUser !== null) || !currentUser}
+              disabled={authIsLoading || (inputValue.trim() === '' && !!currentUser) || !currentUser}
             >
               <Send className="h-5 w-5" />
             </Button>
@@ -202,16 +203,16 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
               onClick={onClose}
               className="bg-[#E91E63] hover:bg-[#d81b60] text-white rounded-md p-2 flex items-center justify-center shrink-0"
               aria-label="Close chat"
-              style={{ width: '40px', height: '40px' }} 
+              style={{ width: '40px', height: '40px' }}
             >
               <ChevronLeft className="h-6 w-6" strokeWidth={2.5} />
             </Button>
           </form>
-           {!authIsLoading && !currentUser && isOpen && (
-             <p className="text-xs text-muted-foreground mt-2 text-center">
-               Want to join the conversation? <Link href="/login" className="text-primary hover:underline font-semibold">Log In</Link> or <Link href="/signup" className="text-primary hover:underline font-semibold">Sign Up</Link>.
-             </p>
-           )}
+          {!authIsLoading && !currentUser && isOpen && (
+            <p className="text-xs text-muted-foreground mt-2 text-center">
+              Want to join the conversation? <Link href="/login" className="text-primary hover:underline font-semibold">Log In</Link> or <Link href="/signup" className="text-primary hover:underline font-semibold">Sign Up</Link>.
+            </p>
+          )}
         </div>
       </div>
     </div>
