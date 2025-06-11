@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 interface ChatSidebarProps {
   isOpen: boolean;
@@ -23,21 +24,35 @@ interface Message {
   timestamp: Date;
 }
 
+// Simulate user authentication state
+// In a real app, this would come from an auth context or service
+// To test logged-in state, set this to an object like: { username: 'YourUsername' }
+// To test logged-out state, set this to null
+const MOCK_CURRENT_USER: { username: string } | null = { username: 'GamblrUser1' };
+// const MOCK_CURRENT_USER: { username: string } | null = null;
+
+
 export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
-  const [userName, setUserName] = useState('Player');
-  const [isNameSet, setIsNameSet] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (isOpen && messages.length === 0 && !isNameSet) {
-      // Add initial bot message only if chat is open, no messages, and name not set
-      setMessages([
-        { id: 'init-bot', text: 'Welcome to GamblrNation chat! Please set your name to begin.', sender: 'bot', name: 'Support Bot', timestamp: new Date() }
-      ]);
+    if (isOpen) {
+      if (MOCK_CURRENT_USER) {
+        setMessages([
+          { id: 'welcome-bot', text: `Hi ${MOCK_CURRENT_USER.username}! Welcome to the GamblrNation chat.`, sender: 'bot', name: 'Support Bot', timestamp: new Date() }
+        ]);
+      } else {
+        setMessages([
+          { id: 'login-prompt-bot', text: 'Welcome to GamblrNation chat! Please log in or sign up to participate.', sender: 'bot', name: 'Support Bot', timestamp: new Date() }
+        ]);
+      }
+    } else {
+      // Optional: Clear messages when chat is closed or reset to a default state
+      // setMessages([]); 
     }
-  }, [isOpen, messages.length, isNameSet]);
+  }, [isOpen]);
   
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -48,26 +63,16 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     }
   }, [messages]);
 
-  const handleNameSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    if (userName.trim()) {
-      setIsNameSet(true);
-      setMessages([ // Reset messages when name is set
-        { id: 'welcome-bot', text: 'Welcome to GamblrNation chat! Feel free to ask anything.', sender: 'bot', name: 'Support Bot', timestamp: new Date() },
-        { id: Date.now().toString(), text: `Name set to ${userName}. You can start chatting now!`, sender: 'bot', name: 'System', timestamp: new Date() }
-      ]);
-    }
-  };
 
   const handleSendMessage = (e: FormEvent) => {
     e.preventDefault();
-    if (inputValue.trim() === '' || !isNameSet) return;
+    if (inputValue.trim() === '' || !MOCK_CURRENT_USER) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
       text: inputValue,
       sender: 'user',
-      name: userName,
+      name: MOCK_CURRENT_USER.username, // Use authenticated user's name
       timestamp: new Date(),
     };
     setMessages((prevMessages) => [...prevMessages, userMessage]);
@@ -77,7 +82,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     setTimeout(() => {
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: `Thanks for your message, ${userName}! This is a simulated response from our advanced AI. How can I help you further?`,
+        text: `Thanks for your message, ${MOCK_CURRENT_USER.username}! This is a simulated response.`,
         sender: 'bot',
         name: 'Support Bot',
         timestamp: new Date(),
@@ -100,90 +105,91 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
           <h2 id="chat-sidebar-title" className="text-lg font-semibold font-headline text-primary">Community Chat</h2>
         </header>
 
-        {!isNameSet ? (
-          <form onSubmit={handleNameSubmit} className="p-4 space-y-3 mt-auto mb-auto">
-            <label htmlFor="userName" className="block text-sm font-medium text-foreground">Enter your name:</label>
-            <Input
-              id="userName"
-              type="text"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              placeholder="Your Name"
-              className="bg-input text-foreground placeholder:text-muted-foreground"
-            />
-            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">Set Name</Button>
-          </form>
-        ) : (
-          <>
-            <ScrollArea className="flex-grow p-4" ref={scrollAreaRef}>
-              <div className="space-y-4">
-                {messages.map((msg) => (
-                  <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`flex items-start gap-2.5 max-w-[80%]`}>
-                      {msg.sender === 'bot' && (
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src={msg.avatar} alt={msg.name} />
-                          <AvatarFallback className="bg-accent text-accent-foreground">
-                            {msg.name.substring(0,1).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                      )}
-                      <div className={`flex flex-col gap-1 ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
-                        <div className={`flex items-center space-x-2 rtl:space-x-reverse ${msg.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                           <span className="text-xs font-semibold text-foreground">{msg.name}</span>
-                           <span className="text-xs font-normal text-muted-foreground">{msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                        </div>
-                        <div className={`p-3 rounded-lg ${msg.sender === 'user' ? 'bg-primary text-primary-foreground rounded-br-none' : 'bg-secondary text-secondary-foreground rounded-bl-none'}`}>
-                          <p className="text-sm font-normal">{msg.text}</p>
-                        </div>
-                      </div>
-                       {msg.sender === 'user' && (
-                        <Avatar className="h-8 w-8">
-                           <AvatarFallback className="bg-primary text-primary-foreground">
-                            <User className="h-4 w-4"/>
-                          </AvatarFallback>
-                        </Avatar>
-                      )}
+        <ScrollArea className="flex-grow p-4" ref={scrollAreaRef}>
+          <div className="space-y-4">
+            {messages.map((msg) => (
+              <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`flex items-start gap-2.5 max-w-[80%]`}>
+                  {msg.sender === 'bot' && (
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={msg.avatar} alt={msg.name} />
+                      <AvatarFallback className="bg-accent text-accent-foreground">
+                        {msg.name.substring(0,1).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  )}
+                  <div className={`flex flex-col gap-1 ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
+                    <div className={`flex items-center space-x-2 rtl:space-x-reverse ${msg.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                        <span className="text-xs font-semibold text-foreground">{msg.name}</span>
+                        <span className="text-xs font-normal text-muted-foreground">{msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                    </div>
+                    <div className={`p-3 rounded-lg ${msg.sender === 'user' ? 'bg-primary text-primary-foreground rounded-br-none' : 'bg-secondary text-secondary-foreground rounded-bl-none'}`}>
+                      <p className="text-sm font-normal">{msg.text}</p>
                     </div>
                   </div>
-                ))}
+                    {msg.sender === 'user' && (
+                    <Avatar className="h-8 w-8">
+                        <AvatarFallback className="bg-primary text-primary-foreground">
+                        <User className="h-4 w-4"/>
+                      </AvatarFallback>
+                    </Avatar>
+                  )}
+                </div>
               </div>
-            </ScrollArea>
+            ))}
+          </div>
+        </ScrollArea>
 
-            <div className="p-4 border-t border-border">
-              <form onSubmit={handleSendMessage} className="flex items-center space-x-2">
-                <Input
-                  type="text"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  placeholder="Type a message..."
-                  className="flex-grow bg-input text-foreground placeholder:text-muted-foreground"
-                  aria-label="Chat message input"
-                  disabled={!isNameSet}
-                />
-                <Button 
-                  type="submit" 
-                  size="icon" 
-                  className="bg-accent hover:bg-accent/90 text-accent-foreground shrink-0" 
-                  aria-label="Send message" 
-                  disabled={!isNameSet || inputValue.trim() === ''}
-                >
-                  <Send className="h-5 w-5" />
-                </Button>
-                <Button
-                  size="icon"
-                  onClick={onClose}
-                  className="bg-[#E91E63] hover:bg-[#d81b60] text-white rounded-md p-2 flex items-center justify-center shrink-0" // Pink color
-                  aria-label="Close chat"
-                  style={{ width: '40px', height: '40px' }} 
-                >
-                  <ChevronLeft className="h-6 w-6" strokeWidth={2.5} />
-                </Button>
-              </form>
+        <div className="p-4 border-t border-border">
+          {MOCK_CURRENT_USER ? (
+            <form onSubmit={handleSendMessage} className="flex items-center space-x-2">
+              <Input
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="Type a message..."
+                className="flex-grow bg-input text-foreground placeholder:text-muted-foreground"
+                aria-label="Chat message input"
+                disabled={!MOCK_CURRENT_USER}
+              />
+              <Button 
+                type="submit" 
+                size="icon" 
+                className="bg-primary hover:bg-primary/90 text-primary-foreground shrink-0" 
+                aria-label="Send message" 
+                disabled={!MOCK_CURRENT_USER || inputValue.trim() === ''}
+              >
+                <Send className="h-5 w-5" />
+              </Button>
+              <Button
+                type="button"
+                size="icon"
+                onClick={onClose}
+                className="bg-[#E91E63] hover:bg-[#d81b60] text-white rounded-md p-2 flex items-center justify-center shrink-0"
+                aria-label="Close chat"
+                style={{ width: '40px', height: '40px' }} 
+              >
+                <ChevronLeft className="h-6 w-6" strokeWidth={2.5} />
+              </Button>
+            </form>
+          ) : (
+            <div className="text-center p-2 text-sm text-muted-foreground">
+              <p>Please <Link href="/login" className="text-primary hover:underline font-semibold">Log In</Link> or <Link href="/signup" className="text-primary hover:underline font-semibold">Sign Up</Link> to send messages.</p>
+               <Button
+                type="button"
+                size="icon"
+                onClick={onClose}
+                className="bg-[#E91E63] hover:bg-[#d81b60] text-white rounded-md p-2 flex items-center justify-center shrink-0 mt-3 mx-auto"
+                aria-label="Close chat"
+                style={{ width: '40px', height: '40px' }} 
+              >
+                <ChevronLeft className="h-6 w-6" strokeWidth={2.5} />
+              </Button>
             </div>
-          </>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
 }
+
