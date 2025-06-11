@@ -38,7 +38,7 @@ const NavLink = ({ href, children, onClick, icon: Icon, isActiveOverride }: { hr
         variant="ghost"
         onClick={onClick}
         className={cn(
-          "text-sm font-medium transition-colors group", // Added 'group', removed 'hover:text-primary'
+          "text-sm font-medium transition-colors group", 
           isActive ? "text-primary font-bold" : "text-foreground/80",
           "flex items-center gap-2 justify-start md:justify-center px-2 py-1 md:px-3 md:py-2"
         )}
@@ -47,7 +47,7 @@ const NavLink = ({ href, children, onClick, icon: Icon, isActiveOverride }: { hr
         {Icon && <Icon className={cn(
             "h-4 w-4 transition-colors",
             isActive ? "text-primary" : "text-accent",
-            !isActive && "group-hover:text-accent-foreground" // Change icon color on hover if not active
+            !isActive && "group-hover:text-accent-foreground" 
           )} />}
         {children}
       </Button>
@@ -65,7 +65,7 @@ function LiveJackpotDisplay() {
       <Button
         variant="ghost"
         className={cn(
-          "text-sm font-medium transition-colors group px-2 py-1 md:px-3 md:py-2 flex items-center gap-1.5", // Added 'group', removed 'hover:text-primary'
+          "text-sm font-medium transition-colors group px-2 py-1 md:px-3 md:py-2 flex items-center gap-1.5", 
           isActive ? "text-primary font-bold bg-primary/10" : "text-foreground/80"
         )}
         aria-current={isActive ? "page" : undefined}
@@ -73,7 +73,7 @@ function LiveJackpotDisplay() {
         <DollarSign className={cn(
             "h-4 w-4 transition-colors", 
             isActive ? "text-primary" : "text-accent",
-            !isActive && "group-hover:text-accent-foreground" // Change icon color on hover if not active
+            !isActive && "group-hover:text-accent-foreground" 
             )} />
         <span className="hidden lg:inline text-foreground/80">Jackpot:</span>
         <span className={cn("font-semibold", isActive ? "text-primary" : "text-accent")}>{jackpotAmount.toLocaleString()}</span>
