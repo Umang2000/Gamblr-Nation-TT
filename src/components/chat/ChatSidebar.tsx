@@ -7,11 +7,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"; // Import Popover
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from '@/context/AuthContext';
 import ChatRulesDialog from './ChatRulesDialog';
+import EmojiPicker from './EmojiPicker'; // Import EmojiPicker
 
 interface ChatSidebarProps {
   isOpen: boolean;
@@ -39,9 +41,10 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const [isRulesOpen, setIsRulesOpen] = useState(false);
+  const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
 
   const botName = "Gamblr Nation Bot";
-  const botAvatarPlaceholder = "https://placehold.co/40x40/A050C3/FFFFFF.png?text=GN";
+  const botAvatarPlaceholder = "https://placehold.co/40x40/A050C3/FFFFFF.png";
   const botAvatarHint = "cartoon monkey";
 
   useEffect(() => {
@@ -76,6 +79,15 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
       setInputValue(value.substring(0, MAX_CHAT_LENGTH));
       toast({ title: "Character limit reached", description: `Maximum ${MAX_CHAT_LENGTH} characters allowed.`, variant: "destructive" });
     }
+  };
+
+  const handleEmojiSelect = (emoji: string) => {
+    if (inputValue.length + emoji.length <= MAX_CHAT_LENGTH) {
+      setInputValue(prev => prev + emoji);
+    } else {
+      toast({ title: "Character limit reached", description: "Cannot add emoji, maximum length exceeded.", variant: "destructive" });
+    }
+    // Popover will close itself if `onClose` is called by EmojiPicker
   };
 
   const handleSendMessage = (e: FormEvent) => {
@@ -170,7 +182,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                       {isUserMessage && currentUser ? (
                         <>
                           {msg.userAvatarUrl ? (
-                            <AvatarImage src={msg.userAvatarUrl} alt={currentUser.username} />
+                            <AvatarImage src={msg.userAvatarUrl} alt={currentUser.username} data-ai-hint="user avatar"/>
                           ) : null}
                           <AvatarFallback className="bg-primary text-primary-foreground">
                             {currentUser.username ? currentUser.username.charAt(0).toUpperCase() : <UserIconLucide className="h-4 w-4" />}
@@ -187,7 +199,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                       <span className="text-xs font-semibold text-foreground px-1">{msg.name}</span>
                       <div
                         className={cn(
-                          'p-3 rounded-lg text-sm font-normal min-w-0 break-all', 
+                          'p-3 rounded-lg text-sm font-normal min-w-0 break-words', 
                           isUserMessage
                             ? 'bg-primary text-primary-foreground rounded-br-none' 
                             : 'bg-secondary text-secondary-foreground rounded-bl-none'
@@ -224,15 +236,31 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                 disabled={authIsLoading || !currentUser}
                 maxLength={MAX_CHAT_LENGTH}
               />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-primary"
-                aria-label="Open emoji picker" 
-              >
-                <Smile className="h-5 w-5" />
-              </Button>
+              <Popover open={isEmojiPickerOpen} onOpenChange={setIsEmojiPickerOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-primary"
+                    aria-label="Open emoji picker" 
+                    disabled={authIsLoading || !currentUser}
+                  >
+                    <Smile className="h-5 w-5" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent 
+                  className="w-auto p-0 border-none shadow-none bg-transparent" 
+                  side="top" 
+                  align="end"
+                  sideOffset={5}
+                >
+                  <EmojiPicker 
+                    onEmojiSelect={handleEmojiSelect} 
+                    onClose={() => setIsEmojiPickerOpen(false)}
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
             <Button
               type="submit"
