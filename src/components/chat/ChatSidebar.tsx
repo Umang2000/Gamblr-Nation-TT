@@ -125,7 +125,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
           <div className="space-y-4">
             {messages.map((msg) => (
               <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`flex items-start gap-2.5 max-w-[80%]`}> {/* items-start aligns avatar and text block top */}
+                <div className={`flex items-start gap-2.5 max-w-[80%]`}>
                   {msg.sender === 'bot' && (
                     <Avatar className="h-8 w-8 shrink-0">
                       <AvatarImage src={msg.avatar} alt={msg.name} />
@@ -134,33 +134,34 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                       </AvatarFallback>
                     </Avatar>
                   )}
-                  {/* Text content container (name, bubble, timestamp) */}
+                  
                   <div className={`flex flex-col gap-0.5 ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
-                    {/* Sender Name */}
                     <div className={`flex items-center space-x-2 rtl:space-x-reverse ${msg.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
                       <span className="text-xs font-semibold text-foreground px-1">{msg.name}</span>
                     </div>
-                    {/* Message Bubble */}
-                    <div
-                      className={cn(
-                        'p-3 rounded-lg text-sm font-normal break-words',
-                        msg.sender === 'user'
-                          ? 'bg-primary text-primary-foreground rounded-br-none'
-                          : 'bg-secondary text-secondary-foreground rounded-bl-none'
-                      )}
-                    >
-                      {msg.text}
-                    </div>
-                    {/* Timestamp - outside and below the bubble, aligned with bubble's edge */}
-                    <div
-                      className={cn(
-                        'text-xs px-1', // Added px-1 for slight horizontal inset from the very edge of the 80% container
-                        msg.sender === 'user' ? 'text-primary-foreground/70' : 'text-muted-foreground'
-                      )}
-                    >
-                      {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    
+                    <div className={`flex items-end gap-1.5 ${msg.sender === 'user' ? 'flex-row' : 'flex-row'}`}>
+                      <div
+                        className={cn(
+                          'p-3 rounded-lg text-sm font-normal break-words',
+                          msg.sender === 'user'
+                            ? 'bg-primary text-primary-foreground rounded-br-none'
+                            : 'bg-secondary text-secondary-foreground rounded-bl-none'
+                        )}
+                      >
+                        {msg.text}
+                      </div>
+                      <div
+                        className={cn(
+                          'text-xs pb-0.5', 
+                          msg.sender === 'user' ? 'text-primary-foreground/70' : 'text-muted-foreground'
+                        )}
+                      >
+                        {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </div>
                     </div>
                   </div>
+
                   {msg.sender === 'user' && currentUser && (
                     <Avatar className="h-8 w-8 shrink-0">
                       {msg.userAvatarUrl ? (
@@ -218,3 +219,4 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     </div>
   );
 }
+
