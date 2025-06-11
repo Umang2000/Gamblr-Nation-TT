@@ -9,6 +9,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { useToast } from "@/hooks/use-toast";
 
 interface ChatSidebarProps {
   isOpen: boolean;
@@ -28,14 +29,15 @@ interface Message {
 // In a real app, this would come from an auth context or service
 // To test logged-in state, set this to an object like: { username: 'YourUsername' }
 // To test logged-out state, set this to null
-const MOCK_CURRENT_USER: { username: string } | null = { username: 'GamblrUser1' };
-// const MOCK_CURRENT_USER: { username: string } | null = null;
+const MOCK_CURRENT_USER: { username: string } | null = null; 
+// const MOCK_CURRENT_USER: { username: string } | null = { username: 'GamblrUser1' };
 
 
 export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (isOpen) {
@@ -48,9 +50,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
           { id: 'login-prompt-bot', text: 'Welcome to GamblrNation chat! Please log in or sign up to participate.', sender: 'bot', name: 'Support Bot', timestamp: new Date() }
         ]);
       }
-    } else {
-      // Optional: Clear messages when chat is closed or reset to a default state
-      // setMessages([]); 
+      setInputValue(''); // Clear input when chat opens
     }
   }, [isOpen]);
   
@@ -66,13 +66,23 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
 
   const handleSendMessage = (e: FormEvent) => {
     e.preventDefault();
-    if (inputValue.trim() === '' || !MOCK_CURRENT_USER) return;
+
+    if (!MOCK_CURRENT_USER) {
+      toast({
+        title: "Login Required",
+        description: "Please log in or sign up to send messages.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (inputValue.trim() === '') return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
       text: inputValue,
       sender: 'user',
-      name: MOCK_CURRENT_USER.username, // Use authenticated user's name
+      name: MOCK_CURRENT_USER.username, 
       timestamp: new Date(),
     };
     setMessages((prevMessages) => [...prevMessages, userMessage]);
@@ -127,7 +137,7 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
                       <p className="text-sm font-normal">{msg.text}</p>
                     </div>
                   </div>
-                    {msg.sender === 'user' && (
+                    {msg.sender === 'user' && MOCK_CURRENT_USER && (
                     <Avatar className="h-8 w-8">
                         <AvatarFallback className="bg-primary text-primary-foreground">
                         <User className="h-4 w-4"/>
@@ -141,55 +151,43 @@ export default function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
         </ScrollArea>
 
         <div className="p-4 border-t border-border">
-          {MOCK_CURRENT_USER ? (
-            <form onSubmit={handleSendMessage} className="flex items-center space-x-2">
-              <Input
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Type a message..."
-                className="flex-grow bg-input text-foreground placeholder:text-muted-foreground"
-                aria-label="Chat message input"
-                disabled={!MOCK_CURRENT_USER}
-              />
-              <Button 
-                type="submit" 
-                size="icon" 
-                className="bg-primary hover:bg-primary/90 text-primary-foreground shrink-0" 
-                aria-label="Send message" 
-                disabled={!MOCK_CURRENT_USER || inputValue.trim() === ''}
-              >
-                <Send className="h-5 w-5" />
-              </Button>
-              <Button
-                type="button"
-                size="icon"
-                onClick={onClose}
-                className="bg-[#E91E63] hover:bg-[#d81b60] text-white rounded-md p-2 flex items-center justify-center shrink-0"
-                aria-label="Close chat"
-                style={{ width: '40px', height: '40px' }} 
-              >
-                <ChevronLeft className="h-6 w-6" strokeWidth={2.5} />
-              </Button>
-            </form>
-          ) : (
-            <div className="text-center p-2 text-sm text-muted-foreground">
-              <p>Please <Link href="/login" className="text-primary hover:underline font-semibold">Log In</Link> or <Link href="/signup" className="text-primary hover:underline font-semibold">Sign Up</Link> to send messages.</p>
-               <Button
-                type="button"
-                size="icon"
-                onClick={onClose}
-                className="bg-[#E91E63] hover:bg-[#d81b60] text-white rounded-md p-2 flex items-center justify-center shrink-0 mt-3 mx-auto"
-                aria-label="Close chat"
-                style={{ width: '40px', height: '40px' }} 
-              >
-                <ChevronLeft className="h-6 w-6" strokeWidth={2.5} />
-              </Button>
-            </div>
-          )}
+          <form onSubmit={handleSendMessage} className="flex items-center space-x-2">
+            <Input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder={MOCK_CURRENT_USER ? "Type a message..." : "Log in to chat..."}
+              className="flex-grow bg-input text-foreground placeholder:text-muted-foreground"
+              aria-label="Chat message input"
+              disabled={!MOCK_CURRENT_USER && !isOpen} // Keep input disabled if chat is not open or user not mocked
+            />
+            <Button 
+              type="submit" 
+              size="icon" 
+              className="bg-primary hover:bg-primary/90 text-primary-foreground shrink-0" 
+              aria-label="Send message" 
+              disabled={inputValue.trim() === '' && MOCK_CURRENT_USER !== null} // Disable send if input is empty AND user is logged in. Allow send attempt if not logged in.
+            >
+              <Send className="h-5 w-5" />
+            </Button>
+            <Button
+              type="button"
+              size="icon"
+              onClick={onClose}
+              className="bg-[#E91E63] hover:bg-[#d81b60] text-white rounded-md p-2 flex items-center justify-center shrink-0"
+              aria-label="Close chat"
+              style={{ width: '40px', height: '40px' }} 
+            >
+              <ChevronLeft className="h-6 w-6" strokeWidth={2.5} />
+            </Button>
+          </form>
+           {!MOCK_CURRENT_USER && isOpen && (
+             <p className="text-xs text-muted-foreground mt-2 text-center">
+               Want to join the conversation? <Link href="/login" className="text-primary hover:underline font-semibold">Log In</Link> or <Link href="/signup" className="text-primary hover:underline font-semibold">Sign Up</Link>.
+             </p>
+           )}
         </div>
       </div>
     </div>
   );
 }
-
