@@ -120,7 +120,7 @@ export default function Navbar() {
                 <Button variant="ghost" className={cn("p-0 hover:bg-transparent", pathname === '/profile' ? 'ring-2 ring-primary rounded-full' : '')}>
                   <Avatar className={cn("h-9 w-9 border-2", pathname === '/profile' ? 'border-primary' : 'border-transparent hover:border-primary/50')}>
                     {currentUser.profileImageUrl ? (
-                      <AvatarImage src={currentUser.profileImageUrl} alt={currentUser.username} />
+                      <AvatarImage src={currentUser.profileImageUrl} alt={currentUser.username || 'User'} />
                     ) : null}
                     <AvatarFallback className="bg-primary/20 text-primary font-semibold">
                       {currentUser.username ? currentUser.username.charAt(0).toUpperCase() : <UserCircle className="h-5 w-5"/>}
@@ -169,7 +169,9 @@ export default function Navbar() {
                      <div className="h-8 w-full bg-muted rounded animate-pulse px-2 py-1"></div>
                   ) : currentUser ? (
                      <NavLink href="/profile" onClick={() => setMobileMenuOpen(false)} icon={UserCircle}>
-                        Profile ({currentUser.username.substring(0,10) + (currentUser.username.length > 10 ? '...' : '')})
+                        {currentUser.username
+                          ? `Profile (${currentUser.username.substring(0, 10)}${currentUser.username.length > 10 ? '...' : ''})`
+                          : 'Profile'}
                       </NavLink>
                   ) : (
                      <NavLink href="/login" onClick={() => setMobileMenuOpen(false)} icon={LogIn} isActiveOverride={pathname === '/login' || pathname === '/signup'}>
