@@ -20,7 +20,7 @@ import { useAuth } from '@/context/AuthContext';
 export default function SignupPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const { login: appLogin } = useAuth(); // Renamed to avoid conflict with local login function
+  const { login: appLogin } = useAuth();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -46,7 +46,7 @@ export default function SignupPage() {
       setIsSubmitting(false);
       return;
     }
-    if (password.length < 8) { // Firebase default is 6, but we can enforce 8
+    if (password.length < 8) { 
       setError('Password must be at least 8 characters long.');
       setIsSubmitting(false);
       return;
@@ -58,38 +58,34 @@ export default function SignupPage() {
     }
 
     // Log the API key the auth instance is using
-    if (auth && auth.app && auth.app.options) {
+    if (auth && auth.app && auth.app.options && auth.app.options.apiKey) {
       console.log("API Key being used by Firebase Auth SDK:", auth.app.options.apiKey);
     } else {
-      console.error("Firebase auth object or its options are not available for logging API key.");
+      console.error("Firebase auth object, its options, or apiKey are not available for logging.");
     }
     
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      // Set the displayName for the new user
       await updateProfile(userCredential.user, { displayName: username });
       
-      // Call appLogin from AuthContext to set the currentUser state and handle redirect
       await appLogin(userCredential.user, username); 
 
       toast({
         title: "Account Created!",
         description: "Welcome to GamblrNation Hub! You are now logged in.",
       });
-      // AuthContext will handle redirecting to '/'
       
     } catch (firebaseError: any) {
-      console.error("Firebase signup error:", firebaseError); // Logs the full error object to the console
-      let errorMessage = "Failed to create account.";
+      console.error("Firebase signup error object:", firebaseError); 
+      let errorMessage = `An unexpected error occurred. Code: ${firebaseError.code || 'N/A'}. Message: ${firebaseError.message || 'No specific message.'}`;
       if (firebaseError.code === 'auth/email-already-in-use') {
         errorMessage = 'An account with this email already exists.';
       } else if (firebaseError.code === 'auth/invalid-email') {
         errorMessage = 'The email address is not valid.';
       } else if (firebaseError.code === 'auth/weak-password') {
         errorMessage = 'The password is too weak. Please choose a stronger password.';
-      } else {
-        // Display the specific Firebase error code if available, otherwise a generic message
-        errorMessage = `An unexpected error occurred: ${firebaseError.code || 'Unknown Firebase error'}. Please check the browser console for more details.`;
+      } else if (firebaseError.code === 'auth/api-key-not-valid') {
+        errorMessage = 'Firebase API Key is not valid. Please check your configuration. Code: auth/api-key-not-valid';
       }
       setError(errorMessage);
       toast({
@@ -142,7 +138,7 @@ export default function SignupPage() {
               <Label htmlFor="confirmPassword">Confirm Password</Label>
               <div className="relative">
                 <KeyRound className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input id="confirmPassword" type={showConfirmPassword ? 'text' : 'password'} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target..value)} placeholder="Re-enter your password" required className="pl-10 pr-10 bg-input text-foreground placeholder:text-muted-foreground border-primary/30 focus:border-primary" autoComplete="new-password"/>
+                <Input id="confirmPassword" type={showConfirmPassword ? 'text' : 'password'} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Re-enter your password" required className="pl-10 pr-10 bg-input text-foreground placeholder:text-muted-foreground border-primary/30 focus:border-primary" autoComplete="new-password"/>
                  <Button type="button" variant="ghost" size="icon" className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-primary" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
                   {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </Button>
