@@ -1,18 +1,20 @@
 
+// Import the functions you need from the SDKs you need
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-// import { getFirestore } from 'firebase/firestore';
-// import { getStorage } from 'firebase/storage';
+// It's good practice to only initialize analytics on the client side
+// import { getAnalytics, isSupported } from "firebase/analytics";
 
-// Firebase project configuration based on user-provided image
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyD0d2rghlKufA6EEF5i99hFxqm93mGFzrs",
+  apiKey: "AIzaSyDOd2rghlKufA6EEF5i99hFxqm93mGFzrs",
   authDomain: "gamblr-nation-5f47b.firebaseapp.com",
   projectId: "gamblr-nation-5f47b",
   storageBucket: "gamblr-nation-5f47b.firebasestorage.app",
   messagingSenderId: "494203262407",
-  appId: "1:494203262407:web:2e48ee332354f20f7a35e2",
-  measurementId: "G-BXD548QSGC" 
+  appId: "1:494203262407:web:24440317779d53577a35e2",
+  measurementId: "G-YTKBMLZN21"
 };
 
 // Initialize Firebase
@@ -24,7 +26,15 @@ if (!getApps().length) {
 }
 
 const auth = getAuth(app);
-// const firestore = getFirestore(app);
-// const storage = getStorage(app);
 
-export { app, auth /*, firestore, storage */ };
+// Initialize Analytics only on the client side, if needed
+// let analytics;
+// if (typeof window !== 'undefined') {
+//   isSupported().then((supported) => {
+//     if (supported) {
+//       analytics = getAnalytics(app);
+//     }
+//   });
+// }
+
+export { app, auth /*, analytics */ };

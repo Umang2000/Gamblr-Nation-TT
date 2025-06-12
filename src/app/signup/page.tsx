@@ -57,6 +57,13 @@ export default function SignupPage() {
       return;
     }
 
+    // Log the API key the auth instance is using
+    if (auth && auth.app && auth.app.options) {
+      console.log("API Key being used by Firebase Auth SDK:", auth.app.options.apiKey);
+    } else {
+      console.error("Firebase auth object or its options are not available for logging API key.");
+    }
+    
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       // Set the displayName for the new user
@@ -135,7 +142,7 @@ export default function SignupPage() {
               <Label htmlFor="confirmPassword">Confirm Password</Label>
               <div className="relative">
                 <KeyRound className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input id="confirmPassword" type={showConfirmPassword ? 'text' : 'password'} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Re-enter your password" required className="pl-10 pr-10 bg-input text-foreground placeholder:text-muted-foreground border-primary/30 focus:border-primary" autoComplete="new-password"/>
+                <Input id="confirmPassword" type={showConfirmPassword ? 'text' : 'password'} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target..value)} placeholder="Re-enter your password" required className="pl-10 pr-10 bg-input text-foreground placeholder:text-muted-foreground border-primary/30 focus:border-primary" autoComplete="new-password"/>
                  <Button type="button" variant="ghost" size="icon" className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-primary" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
                   {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </Button>
