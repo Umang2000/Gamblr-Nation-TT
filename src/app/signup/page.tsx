@@ -72,6 +72,7 @@ export default function SignupPage() {
       // AuthContext will handle redirecting to '/'
       
     } catch (firebaseError: any) {
+      console.error("Firebase signup error:", firebaseError); // Logs the full error object to the console
       let errorMessage = "Failed to create account.";
       if (firebaseError.code === 'auth/email-already-in-use') {
         errorMessage = 'An account with this email already exists.';
@@ -80,8 +81,8 @@ export default function SignupPage() {
       } else if (firebaseError.code === 'auth/weak-password') {
         errorMessage = 'The password is too weak. Please choose a stronger password.';
       } else {
-        console.error("Firebase signup error:", firebaseError);
-        errorMessage = "An unexpected error occurred. Please try again later.";
+        // Display the specific Firebase error code if available, otherwise a generic message
+        errorMessage = `An unexpected error occurred: ${firebaseError.code || 'Unknown Firebase error'}. Please check the browser console for more details.`;
       }
       setError(errorMessage);
       toast({
