@@ -6,13 +6,13 @@ import { getAuth } from 'firebase/auth';
 
 // TODO: Replace with your app's Firebase project configuration
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
-  measurementId: "YOUR_MEASUREMENT_ID" // Optional
+  apiKey: "YAIzaSyDOd2rghlKufA6EEF5i99hFxqm93mGFzrs",
+  authDomain: "gamblr-nation-5f47b.firebaseapp.comN",
+  projectId: "gamblr-nation-5f47b",
+  storageBucket: "gamblr-nation-5f47b.firebasestorage.app",
+  messagingSenderId: "494203262407",
+  appId: "1:494203262407:web:2e48ee332354f20f7a35e2",
+  measurementId: "G-BXD548QSGC" // Optional
 };
 
 // Initialize Firebase
