@@ -39,7 +39,7 @@ const NavLink = ({ href, children, onClick, icon: Icon, isActiveOverride }: { hr
         className={cn(
           "text-sm font-medium transition-colors group", 
           isActive ? "text-primary font-bold" : "text-foreground/80",
-          "flex items-center gap-2 justify-start lg:justify-center px-2 py-1 lg:px-3 lg:py-2"
+          "flex items-center gap-2 justify-start lg:justify-center px-2 py-1 lg:px-3 lg:py-2 w-full" // Added w-full for consistency in sheet
         )}
         aria-current={isActive ? "page" : undefined}
       >
@@ -168,11 +168,28 @@ export default function Navbar() {
                   {isLoading ? (
                      <div className="h-8 w-full bg-muted rounded animate-pulse px-2 py-1"></div>
                   ) : currentUser ? (
-                     <NavLink href="/profile" onClick={() => setMobileMenuOpen(false)} icon={UserCircle}>
-                        {currentUser.username
-                          ? `Profile (${currentUser.username.substring(0, 10)}${currentUser.username.length > 10 ? '...' : ''})`
-                          : 'Profile'}
-                      </NavLink>
+                     <Link href="/profile" passHref>
+                        <Button
+                            variant="ghost"
+                            onClick={() => setMobileMenuOpen(false)}
+                            className={cn(
+                                "text-sm font-medium transition-colors group w-full",
+                                pathname === '/profile' ? "text-primary font-bold" : "text-foreground/80",
+                                "flex items-center gap-2 justify-start px-2 py-1"
+                            )}
+                            aria-current={pathname === '/profile' ? "page" : undefined}
+                        >
+                            <Avatar className={cn("h-6 w-6", pathname === '/profile' ? 'ring-1 ring-primary' : '')}>
+                                {currentUser.profileImageUrl ? (
+                                    <AvatarImage src={currentUser.profileImageUrl} alt={currentUser.username || 'User'} />
+                                ) : null}
+                                <AvatarFallback className="bg-primary/20 text-primary text-xs">
+                                    {currentUser.username ? currentUser.username.charAt(0).toUpperCase() : <UserCircle className="h-3 w-3" />}
+                                </AvatarFallback>
+                            </Avatar>
+                            <span className="truncate">{currentUser.username || 'Profile'}</span>
+                        </Button>
+                    </Link>
                   ) : (
                      <NavLink href="/login" onClick={() => setMobileMenuOpen(false)} icon={LogIn} isActiveOverride={pathname === '/login' || pathname === '/signup'}>
                         Login
