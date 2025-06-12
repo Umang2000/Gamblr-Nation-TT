@@ -7,7 +7,7 @@ import { getAuth } from 'firebase/auth';
 // TODO: Replace with your app's Firebase project configuration
 const firebaseConfig = {
   apiKey: "YAIzaSyDOd2rghlKufA6EEF5i99hFxqm93mGFzrs",
-  authDomain: "gamblr-nation-5f47b.firebaseapp.comN",
+  authDomain: "gamblr-nation-5f47b.firebaseapp.com",
   projectId: "gamblr-nation-5f47b",
   storageBucket: "gamblr-nation-5f47b.firebasestorage.app",
   messagingSenderId: "494203262407",
@@ -28,3 +28,4 @@ const auth = getAuth(app);
 // const storage = getStorage(app);
 
 export { app, auth /*, firestore, storage */ };
+
