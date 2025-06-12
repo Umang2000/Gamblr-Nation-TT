@@ -5,14 +5,16 @@ import { getAuth } from 'firebase/auth';
 // import { getStorage } from 'firebase/storage';
 
 // TODO: Replace with your app's Firebase project configuration
+// Make sure your API key and other details are correct.
+// The error "auth/api-key-not-valid" means the apiKey below is incorrect.
 const firebaseConfig = {
-  apiKey: "YAIzaSyDOd2rghlKufA6EEF5i99hFxqm93mGFzrs",
+  apiKey: "YOUR_API_KEY", // <-- DOUBLE CHECK THIS VALUE FROM YOUR FIREBASE CONSOLE
   authDomain: "gamblr-nation-5f47b.firebaseapp.com",
   projectId: "gamblr-nation-5f47b",
-  storageBucket: "gamblr-nation-5f47b.firebasestorage.app",
-  messagingSenderId: "494203262407",
-  appId: "1:494203262407:web:2e48ee332354f20f7a35e2",
-  measurementId: "G-BXD548QSGC" // Optional
+  storageBucket: "gamblr-nation-5f47b.appspot.com", // Corrected from .firebasestorage.app for consistency with typical config
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID",
+  measurementId: undefined // Use undefined if you don't have one, or paste "YOUR_MEASUREMENT_ID"
 };
 
 // Initialize Firebase
@@ -28,4 +30,3 @@ const auth = getAuth(app);
 // const storage = getStorage(app);
 
 export { app, auth /*, firestore, storage */ };
-
