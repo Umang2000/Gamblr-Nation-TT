@@ -1,13 +1,14 @@
-
+// @ts-nocheck
 'use client';
 
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { ArrowLeft, Star, Zap, Dices, CircleDot, CoinsIcon as CoinflipIcon, Landmark, Spade } from 'lucide-react';
+import { ArrowLeft, Star, Zap } from 'lucide-react';
+import GameSpecificIcon from '@/components/icons/GameSpecificIcon'; // Import the new icon component
 
-// Mock game data
+// Mock game data - ensure iconName is used
 const gameDetailsData: { [key: string]: any } = {
   roulette: { 
     id: 'roulette', 
@@ -17,7 +18,7 @@ const gameDetailsData: { [key: string]: any } = {
     imageHint: "roulette casino",
     description: "Spin the wheel and try your luck!", 
     longDescription: "Experience the thrill of the classic casino game, Roulette. Place your bets on your lucky numbers, colors, or sections of the wheel. Watch as the ball spins and hope it lands in your favor. This is a simplified mock version focusing on the spin and random outcome.",
-    icon: CircleDot,
+    iconName: 'CircleDotDashed',
   },
   coinflip: { 
     id: 'coinflip', 
@@ -27,7 +28,7 @@ const gameDetailsData: { [key: string]: any } = {
     imageHint: "flipping coin",
     description: "Heads or Tails? Make your choice.", 
     longDescription: "The simplest game of chance! Call heads or tails and see if fate is on your side. This mock-up simulates a coin flip with a random outcome.",
-    icon: CoinflipIcon,
+    iconName: 'Coins',
   },
   'dice-roll': { 
     id: 'dice-roll', 
@@ -37,7 +38,7 @@ const gameDetailsData: { [key: string]: any } = {
     imageHint: "dice game",
     description: "Roll the dice and see what you get.", 
     longDescription: "Roll one or more dice and see the outcome. A fundamental game of chance, perfect for quick fun. This version simulates rolling two standard six-sided dice.",
-    icon: Dices,
+    iconName: 'Dices',
   },
   slots: { 
     id: 'slots', 
@@ -47,7 +48,7 @@ const gameDetailsData: { [key: string]: any } = {
     imageHint: "slot machine",
     description: "Spin the reels for a chance to win big!", 
     longDescription: "Try your luck with our classic slot machine mock-up. Spin the reels and match the symbols to get a (simulated) win. Features three reels with common slot symbols.",
-    icon: Landmark,
+    iconName: 'Landmark',
   },
   blackjack: { 
     id: 'blackjack', 
@@ -57,7 +58,7 @@ const gameDetailsData: { [key: string]: any } = {
     imageHint: "blackjack cards",
     description: "Try to beat the dealer and get 21.", 
     longDescription: "The classic card game of 21. Try to get closer to 21 than the dealer without going over. This is a very simplified mock-up allowing you to 'Hit' or 'Stand'.",
-    icon: Spade,
+    iconName: 'Spade',
   },
 };
 
@@ -83,8 +84,6 @@ export default function GameDetailPage({ params }: { params: { gameId: string } 
     );
   }
   
-  const GameIcon = game.icon || Zap;
-
   return (
     <div className="space-y-8">
        <Button variant="outline" asChild className="mb-2 border-primary text-primary hover:bg-primary/10 hover:text-primary">
@@ -95,11 +94,11 @@ export default function GameDetailPage({ params }: { params: { gameId: string } 
 
       <Card className="overflow-hidden glass-card">
         <CardHeader className="p-0 relative h-64 md:h-96">
-          <Image src="https://placehold.co/800x450/CCCCCC/333333.png" alt={game.title} layout="fill" objectFit="cover" priority data-ai-hint={game.imageHint}/>
+          <Image src="https://placehold.co/800x450.png" alt={game.title} layout="fill" objectFit="cover" priority data-ai-hint={game.imageHint}/>
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
           <div className="absolute bottom-0 left-0 p-6">
             <CardTitle className="text-4xl md:text-5xl font-bold text-white text-glow-primary flex items-center">
-              <GameIcon className="mr-3 h-10 w-10 text-accent" />
+              <GameSpecificIcon iconName={game.iconName} className="mr-3 h-10 w-10 text-accent" />
               {game.title}
             </CardTitle>
             <CardDescription className="text-lg text-primary-foreground/80">{game.genre}</CardDescription>

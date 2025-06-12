@@ -41,7 +41,7 @@ const calculateHandValue = (hand: PlayingCard[]): number => {
 
 const CardDisplay = ({ card, hidden }: { card?: PlayingCard, hidden?: boolean }) => {
   if (hidden || !card) {
-    return <div className="w-16 h-24 bg-primary rounded-md flex items-center justify-center text-primary-foreground shadow-md border-2 border-primary-foreground/50">?</div>;
+    return <div className="w-16 h-24 bg-muted rounded-md flex items-center justify-center text-muted-foreground shadow-md border-2 border-border">?</div>;
   }
   const color = (card.suit === '♥' || card.suit === '♦') ? 'text-red-500' : 'text-foreground';
   return (
@@ -118,10 +118,10 @@ export default function BlackjackPlayPage() {
         }
       }
       setDealerHand(currentDealerHand);
-      setDeck(currentDeck); // Update deck state
+      setDeck(currentDeck); 
 
-      const finalPlayerScore = calculateHandValue(playerHand); // Recalculate just in case
-      setDealerScore(currentDealerScore); // Update dealer score state
+      const finalPlayerScore = calculateHandValue(playerHand); 
+      setDealerScore(currentDealerScore); 
 
       if (currentDealerScore > 21) {
         setMessage('Dealer Busts! Player Wins.');
@@ -140,16 +140,16 @@ export default function BlackjackPlayPage() {
 
   const handleHit = () => {
     if (gameOver || deck.length === 0) return;
-    const newCard = dealCard([...deck]); // Create a copy to modify
+    const newCard = dealCard([...deck]); 
     if (newCard) {
       setPlayerHand(prev => [...prev, newCard]);
-      setDeck(prev => prev.slice(0, -1)); // Remove the dealt card from original deck state
+      setDeck(prev => prev.slice(0, -1)); 
     }
   };
 
   const handleStand = () => {
     if (gameOver) return;
-    setDealerTurn(true); // Trigger dealer's turn
+    setDealerTurn(true); 
   };
 
   return (
@@ -171,7 +171,6 @@ export default function BlackjackPlayPage() {
         </CardHeader>
         <CardContent className="flex flex-col items-center space-y-6">
           
-          {/* Dealer's Hand */}
           <div className="w-full">
             <h3 className="text-lg font-semibold text-accent mb-2 text-center">Dealer's Hand ({!dealerTurn && !gameOver ? '?' : dealerScore})</h3>
             <div className="flex justify-center space-x-2 min-h-[104px]">
@@ -181,7 +180,6 @@ export default function BlackjackPlayPage() {
             </div>
           </div>
 
-          {/* Player's Hand */}
            <div className="w-full">
             <h3 className="text-lg font-semibold text-accent mb-2 text-center">Your Hand ({playerScore})</h3>
             <div className="flex justify-center space-x-2 min-h-[104px]">
@@ -199,10 +197,10 @@ export default function BlackjackPlayPage() {
           )}
 
           <div className="flex space-x-4">
-            <Button onClick={handleHit} disabled={gameOver || playerScore > 21 || dealerTurn} className="bg-green-500 hover:bg-green-600 text-white">
+            <Button onClick={handleHit} disabled={gameOver || playerScore > 21 || dealerTurn} className="bg-primary hover:bg-primary/90 text-primary-foreground">
               <Check className="mr-2 h-5 w-5" /> Hit
             </Button>
-            <Button onClick={handleStand} disabled={gameOver || playerScore > 21 || dealerTurn} className="bg-red-500 hover:bg-red-600 text-white">
+            <Button onClick={handleStand} disabled={gameOver || playerScore > 21 || dealerTurn} className="bg-destructive hover:bg-destructive/90 text-destructive-foreground">
               <Ban className="mr-2 h-5 w-5" /> Stand
             </Button>
           </div>
