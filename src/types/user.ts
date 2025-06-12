@@ -1,8 +1,8 @@
 
 export interface User {
-  id: string;
-  username: string;
-  email: string;
-  password?: string; // Password should not typically be part of the client-side User object after login
-  profileImageUrl?: string; // Added for profile picture
+  id: string; // Corresponds to Firebase uid
+  username: string | null; // Corresponds to Firebase displayName
+  email: string | null;
+  profileImageUrl?: string | null; // Corresponds to Firebase photoURL
+  // Password is not stored here as Firebase handles it
 }

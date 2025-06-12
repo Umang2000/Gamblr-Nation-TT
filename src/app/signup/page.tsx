@@ -2,7 +2,6 @@
 // Using 'use client' for form interactions
 'use client';
 
-import type { User } from '@/types/user';
 import { useState, FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -14,10 +13,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { UserPlus, Eye, EyeOff, Mail, KeyRound, User as UserIconLucide } from 'lucide-react';
 import Logo from '@/components/icons/Logo';
 import { useToast } from "@/hooks/use-toast";
+import { auth } from '@/lib/firebase';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { useAuth } from '@/context/AuthContext';
 
 export default function SignupPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { login: appLogin } = useAuth(); // Renamed to avoid conflict with local login function
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -43,57 +46,52 @@ export default function SignupPage() {
       setIsSubmitting(false);
       return;
     }
-    if (password.length < 8) {
+    if (password.length < 8) { // Firebase default is 6, but we can enforce 8
       setError('Password must be at least 8 characters long.');
       setIsSubmitting(false);
       return;
     }
+    if (username.trim().length < 3) {
+      setError('Username must be at least 3 characters long.');
+      setIsSubmitting(false);
+      return;
+    }
 
-    // Retrieve existing users from localStorage
-    let users: User[] = [];
     try {
-      const storedUsers = localStorage.getItem('users');
-      if (storedUsers) {
-        users = JSON.parse(storedUsers);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      // Set the displayName for the new user
+      await updateProfile(userCredential.user, { displayName: username });
+      
+      // Call appLogin from AuthContext to set the currentUser state and handle redirect
+      await appLogin(userCredential.user, username); 
+
+      toast({
+        title: "Account Created!",
+        description: "Welcome to GamblrNation Hub! You are now logged in.",
+      });
+      // AuthContext will handle redirecting to '/'
+      
+    } catch (firebaseError: any) {
+      let errorMessage = "Failed to create account.";
+      if (firebaseError.code === 'auth/email-already-in-use') {
+        errorMessage = 'An account with this email already exists.';
+      } else if (firebaseError.code === 'auth/invalid-email') {
+        errorMessage = 'The email address is not valid.';
+      } else if (firebaseError.code === 'auth/weak-password') {
+        errorMessage = 'The password is too weak. Please choose a stronger password.';
+      } else {
+        console.error("Firebase signup error:", firebaseError);
+        errorMessage = "An unexpected error occurred. Please try again later.";
       }
-    } catch (e) {
-      console.error("Failed to parse users from localStorage", e);
-      // Potentially handle corrupted data, e.g., by clearing it or warning user
-    }
-    
-
-    // Check for duplicate email or username
-    if (users.find(u => u.email === email)) {
-      setError('An account with this email already exists.');
+      setError(errorMessage);
+      toast({
+        title: "Signup Failed",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
       setIsSubmitting(false);
-      return;
     }
-    if (users.find(u => u.username === username)) {
-      setError('This username is already taken.');
-      setIsSubmitting(false);
-      return;
-    }
-    
-    // Simulate API call for signup (no actual API call here)
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    const newUser: User = {
-      id: Date.now().toString(), // Simple ID generation for mock
-      username,
-      email,
-      password, // Storing plain password - INSECURE for real apps!
-    };
-
-    users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
-
-    toast({
-      title: "Account Created!",
-      description: "Welcome to GamblrNation Hub! Please log in to continue.",
-    });
-    router.push('/login'); 
-    
-    setIsSubmitting(false);
   };
 
   return (
@@ -112,21 +110,21 @@ export default function SignupPage() {
               <Label htmlFor="username">Username</Label>
               <div className="relative">
                 <UserIconLucide className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input id="username" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Choose a cool username" required className="pl-10 bg-input text-foreground placeholder:text-muted-foreground border-primary/30 focus:border-primary"/>
+                <Input id="username" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Choose a cool username" required className="pl-10 bg-input text-foreground placeholder:text-muted-foreground border-primary/30 focus:border-primary" autoComplete="username"/>
               </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email Address</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required className="pl-10 bg-input text-foreground placeholder:text-muted-foreground border-primary/30 focus:border-primary"/>
+                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required className="pl-10 bg-input text-foreground placeholder:text-muted-foreground border-primary/30 focus:border-primary" autoComplete="email"/>
               </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <div className="relative">
                 <KeyRound className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input id="password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Minimum 8 characters" required className="pl-10 pr-10 bg-input text-foreground placeholder:text-muted-foreground border-primary/30 focus:border-primary"/>
+                <Input id="password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Minimum 8 characters" required className="pl-10 pr-10 bg-input text-foreground placeholder:text-muted-foreground border-primary/30 focus:border-primary" autoComplete="new-password"/>
                 <Button type="button" variant="ghost" size="icon" className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-primary" onClick={() => setShowPassword(!showPassword)}>
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </Button>
@@ -136,7 +134,7 @@ export default function SignupPage() {
               <Label htmlFor="confirmPassword">Confirm Password</Label>
               <div className="relative">
                 <KeyRound className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input id="confirmPassword" type={showConfirmPassword ? 'text' : 'password'} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Re-enter your password" required className="pl-10 pr-10 bg-input text-foreground placeholder:text-muted-foreground border-primary/30 focus:border-primary"/>
+                <Input id="confirmPassword" type={showConfirmPassword ? 'text' : 'password'} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Re-enter your password" required className="pl-10 pr-10 bg-input text-foreground placeholder:text-muted-foreground border-primary/30 focus:border-primary" autoComplete="new-password"/>
                  <Button type="button" variant="ghost" size="icon" className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-primary" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
                   {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </Button>

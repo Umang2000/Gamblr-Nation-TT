@@ -2,10 +2,8 @@
 // Using 'use client' for form interactions
 'use client';
 
-import type { User } from '@/types/user';
 import { useState, FormEvent } from 'react';
 import Link from 'next/link';
-// import { useRouter } from 'next/navigation'; // No longer needed if AuthContext handles redirect
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,10 +12,11 @@ import { LogIn, Eye, EyeOff, Mail, KeyRound } from 'lucide-react';
 import Logo from '@/components/icons/Logo';
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from '@/context/AuthContext';
+import { auth } from '@/lib/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 export default function LoginPage() {
-  // const router = useRouter(); // No longer needed if AuthContext handles redirect
-  const { login } = useAuth();
+  const { login: appLogin } = useAuth(); // Renamed to avoid conflict
   const { toast } = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -36,41 +35,32 @@ export default function LoginPage() {
       return;
     }
     
-    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
-
-    let users: User[] = [];
     try {
-      const storedUsers = localStorage.getItem('users');
-      if (storedUsers) {
-        users = JSON.parse(storedUsers);
-      }
-    } catch (e) {
-      console.error("Failed to parse users from localStorage", e);
-      setError('An error occurred. Please try again.');
-      setIsSubmitting(false);
-      return;
-    }
-
-    const foundUser = users.find(u => u.email === email);
-
-    if (foundUser && foundUser.password === password) { // INSECURE: Plain text password check
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      await appLogin(userCredential.user); // AuthContext now handles redirect
       toast({
         title: "Login Successful!",
-        description: "Welcome back to GamblrNation Hub!",
+        description: `Welcome back, ${userCredential.user.displayName || userCredential.user.email}!`,
       });
-      // Exclude password from being stored in currentUser state
-      const { password: _, ...userToLogin } = foundUser; 
-      login(userToLogin); 
-      // router.push('/'); // AuthContext now handles redirect
-    } else {
-      setError('Invalid email or password.');
+    } catch (firebaseError: any) {
+      let errorMessage = "Invalid email or password.";
+      if (firebaseError.code === 'auth/user-not-found' || firebaseError.code === 'auth/wrong-password' || firebaseError.code === 'auth/invalid-credential') {
+        errorMessage = "Invalid email or password. Please try again.";
+      } else if (firebaseError.code === 'auth/invalid-email') {
+        errorMessage = "The email address is not valid.";
+      } else {
+        console.error("Firebase login error:", firebaseError);
+        errorMessage = "An unexpected error occurred. Please try again later.";
+      }
+      setError(errorMessage);
       toast({
         title: "Login Failed",
-        description: "Invalid email or password. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
-    setIsSubmitting(false);
   };
 
   return (
@@ -97,6 +87,7 @@ export default function LoginPage() {
                   placeholder="you@example.com"
                   required
                   className="pl-10 bg-input text-foreground placeholder:text-muted-foreground border-primary/30 focus:border-primary"
+                  autoComplete="email"
                 />
               </div>
             </div>
@@ -112,6 +103,7 @@ export default function LoginPage() {
                   placeholder="••••••••"
                   required
                   className="pl-10 pr-10 bg-input text-foreground placeholder:text-muted-foreground border-primary/30 focus:border-primary"
+                  autoComplete="current-password"
                 />
                 <Button
                   type="button"
