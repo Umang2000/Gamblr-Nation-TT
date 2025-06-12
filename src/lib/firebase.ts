@@ -6,13 +6,13 @@ import { getAuth } from 'firebase/auth';
 
 // Firebase project configuration based on user-provided image
 const firebaseConfig = {
-  apiKey: "AlzaSyDOd2rghlKufA6EEF5i99hFxqm93mGFzrs",
+  apiKey: "AIzaSyD0d2rghlKufA6EEF5i99hFxqm93mGFzrs",
   authDomain: "gamblr-nation-5f47b.firebaseapp.com",
   projectId: "gamblr-nation-5f47b",
-  storageBucket: "gamblr-nation-5f47b.appspot.com",
+  storageBucket: "gamblr-nation-5f47b.firebasestorage.app",
   messagingSenderId: "494203262407",
-  appId: "YOUR_APP_ID", // Please find this in your Firebase Console > Project Settings > General > Your Apps > SDK setup and configuration
-  measurementId: undefined 
+  appId: "1:494203262407:web:2e48ee332354f20f7a35e2",
+  measurementId: "G-BXD548QSGC" 
 };
 
 // Initialize Firebase
